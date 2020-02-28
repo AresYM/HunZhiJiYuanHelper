@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+39319213931921")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+69286716928671")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -120,146 +120,6 @@ function floatwinrun()
     end
 end
 
-
-local LoginGameErrorTimes = 0;
-
--- 开启游戏
-function Unit.State.OpenGame()
-    
-    local gameName = gettopapppackagenameex();
-    
-    if gameName == Global.PackageName then
-        
-		LoginGameErrorTimes = LoginGameErrorTimes + 1;
-        
-        Ares2.MessageBox("尝试第"..LoginGameErrorTimes.."次登录")
-        
-		if Ares2.Find.MultiColor(feature.小七手游.小号列表) == false then
-            Ares2.TapFormFeature(feature.小七手游.游戏标签);
-		end 
-        
-		local sh5 = Ares2.Find.Text(feature.小七手游.H5未选择,true);
-        
-		local bh5 = Ares2.Find.Text(feature.小七手游.H5已选择,true);
-        
-		if LoginGameErrorTimes > 10 then
-            LoginGameErrorTimes = 0;
-            KillGame()
-            return "OpenGame";
-		end
-        
-        -- 启动成功了 继续下一步
-        if sh5 or bh5 then
-			-- 向下滑动 找出游戏图标
-			Ares2.Swipe(360,540,360,1080,3,1);
-            -- 点击魂之纪元的游戏图标
-            if Ares2.Find.MultiColor(feature.小七手游.魂之纪元,true) then
-				Ares2.Sleep(1);
-                local loginResult = RoleLogin();
-                if loginResult == true then
-                    LoginGameErrorTimes = 0;
-                    return "SystemGameJoin"
-                else
-                    return "OpenGame";
-                end
-            else
-                return "OpenGame";
-            end
-        else
-            -- 检测是不是进入了账号列表界面
-            if Ares2.Find.MultiColor(feature.小七手游.小号列表) then
-				Ares2.Sleep(1);
-                local loginResult = RoleLogin();
-                if loginResult == true then
-                    LoginGameErrorTimes = 0;
-                    return "SystemGameJoin"
-                else
-                    return "OpenGame";
-                end
-            else
-                -- 检测是不是已经在游戏内了
-                if CheckIsGameIndexPage() == true then 
-                    return "HandleTasks";
-                else
-					-- 检测是不是进入了开始游戏界面
-                    if Ares2.Find.MultiColor(feature.游戏进入页.老账号_开始冒险) then
-						LoginGameErrorTimes = 0;
-						return "SystemGameJoin";
-					else					
-						return "OpenGame";
-                    end
-                end
-            end
-        end
-    else
-        -- 启动游戏
-        StartGameOnly();
-        -- 没启动成功 继续检测
-        return "OpenGame";
-    end
-end
-
-Unit.Param.OpenGame={
-
-};
-
--- 正式开始游戏 新账号
-function Unit.State.StartGamingNewLogin()
-    return "StartGamingNewLogin";
-end
-
-Unit.Param.StartGamingNewLogin={
-
-};
-
- 
-
-
--- 重启程序
-function CheckGameStart()
-    KillGame()
-    -- 检测是不是在前台
-    if XM.Timer("CheckGameStart") then
-        local gameName = gettopapppackagenameex();
-        if gameName ~= Global.PackageName then
-            local isSuccess = sysstartapp(Global.PackageName);
-            sleep(3000);
-            if isSuccess == 0 then
-                messagebox("没有安装游戏")
-            end 
-        end
-    end
-end
-
--- 杀死游戏进程
-function KillGame()
-    local gameName = gettopapppackagenameex();
-    if gameName == Global.PackageName then
-        syskillapp(gameName);
-    end
-end
-
--- 仅启动游戏
-function StartGameOnly()
-    local gameName = gettopapppackagenameex();
-    if gameName ~= Global.PackageName then
-        sysstartapp(Global.PackageName);
-    end
-end
-
--- 获取资源目录的路径
-function GetSourcePath()
-    local fullPath = getrcpath("rc:main.png");
-    local pathSplits = XM.Split(fullPath,"/");
-    local splitsLength = table.getn(pathSplits);
-    local sourcePath = "";
-    for i=0,splitsLength-1,1 do
-        if pathSplits[i] ~= nil then
-            sourcePath = sourcePath..pathSplits[i].."/";
-        end
-    end
-    return sourcePath;
-end
 
 
 
@@ -429,6 +289,18 @@ feature_leidian ={
         通关提醒 = {"通关提醒",559,448,635,513,"DA3A02-000000","35|-1|DA3B02-000000,18|-16|DC3E04-000000,15|20|CD2D01-000000,16|1|FFDC84-000000"},
 		关闭通关提醒 = {374,751,1}
 	},
+    好友 = {
+		图标 = {44,1148,1},
+		邮件 = {
+			图标 = {582,974,2,true},
+			一键领取 = {"一键领取",388,856,525,918,"EF8F0C-000000","2|20|F59D24-000000,17|3|EF910F-000000,21|19|FFFFFF-000000,43|12|F5A73C-000000"},
+            领取确认 = {454,886,1},
+			删除已读 = {264,892,1},
+            未读邮件 = {"未读邮件",82,297,181,374,"FEDF35-000000","13|1|FEE034-000000,26|12|E7A21C-000000,4|20|E6A62F-000000,-8|13|E7A11C-000000"},
+			删除未读 = {467,889,1},
+            退出 = {692,227,1}
+		},
+    },
 	login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
         h5_big = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111",0.9},
@@ -1579,6 +1451,40 @@ function InitGameIndex(success,fail)
 end
 
 
+
+-- 重启程序
+function CheckGameStart()
+    KillGame()
+    -- 检测是不是在前台
+    if XM.Timer("CheckGameStart") then
+        local gameName = gettopapppackagenameex();
+        if gameName ~= Global.PackageName then
+            local isSuccess = sysstartapp(Global.PackageName);
+            sleep(3000);
+            if isSuccess == 0 then
+                messagebox("没有安装游戏")
+            end 
+        end
+    end
+end
+
+-- 杀死游戏进程
+function KillGame()
+    local gameName = gettopapppackagenameex();
+    if gameName == Global.PackageName then
+        syskillapp(gameName);
+    end
+end
+
+-- 仅启动游戏
+function StartGameOnly()
+    local gameName = gettopapppackagenameex();
+    if gameName ~= Global.PackageName then
+        sysstartapp(Global.PackageName);
+    end
+end
+ 
+
 -- 进入游戏 开始冒险
 function Unit.State.SystemGameJoin()
     local a1 = Ares2.Find.MultiColor(feature.游戏进入页.老账号_公告);
@@ -1660,7 +1566,87 @@ Unit.Param.SystemGameStart_New={
 	
 };
 
+local LoginGameErrorTimes = 0;
 
+-- 开启游戏
+function Unit.State.OpenGame()
+    
+    local gameName = gettopapppackagenameex();
+    
+    if gameName == Global.PackageName then
+        
+		LoginGameErrorTimes = LoginGameErrorTimes + 1;
+        
+        Ares2.MessageBox("尝试第"..LoginGameErrorTimes.."次登录")
+        
+		if Ares2.Find.MultiColor(feature.小七手游.小号列表) == false then
+            Ares2.TapFormFeature(feature.小七手游.游戏标签);
+		end 
+        
+		local sh5 = Ares2.Find.Text(feature.小七手游.H5未选择,true);
+        
+		local bh5 = Ares2.Find.Text(feature.小七手游.H5已选择,true);
+        
+		if LoginGameErrorTimes > 10 then
+            LoginGameErrorTimes = 0;
+            KillGame()
+            return "OpenGame";
+		end
+        
+        -- 启动成功了 继续下一步
+        if sh5 or bh5 then
+			-- 向下滑动 找出游戏图标
+			Ares2.Swipe(360,540,360,1080,3,1);
+            -- 点击魂之纪元的游戏图标
+            if Ares2.Find.MultiColor(feature.小七手游.魂之纪元,true) then
+				Ares2.Sleep(1);
+                local loginResult = RoleLogin();
+                if loginResult == true then
+                    LoginGameErrorTimes = 0;
+                    return "SystemGameJoin"
+                else
+                    return "OpenGame";
+                end
+            else
+                return "OpenGame";
+            end
+        else
+            -- 检测是不是进入了账号列表界面
+            if Ares2.Find.MultiColor(feature.小七手游.小号列表) then
+				Ares2.Sleep(1);
+                local loginResult = RoleLogin();
+                if loginResult == true then
+                    LoginGameErrorTimes = 0;
+                    return "SystemGameJoin"
+                else
+                    return "OpenGame";
+                end
+            else
+                -- 检测是不是已经在游戏内了
+                if CheckIsGameIndexPage() == true then 
+                    return "HandleTasks";
+                else
+					-- 检测是不是进入了开始游戏界面
+                    if Ares2.Find.MultiColor(feature.游戏进入页.老账号_开始冒险) then
+						LoginGameErrorTimes = 0;
+						return "SystemGameJoin";
+					else					
+						return "OpenGame";
+                    end
+                end
+            end
+        end
+    else
+        -- 启动游戏
+        StartGameOnly();
+        -- 没启动成功 继续检测
+        return "OpenGame";
+    end
+end
+
+Unit.Param.OpenGame={
+
+};
 -- 根据配置文件登录小号
 function RoleLogin()
     -- 上滑显示全部列表
@@ -2616,19 +2602,31 @@ end
 function ShouQuYouJian()
     
     -- 打开好友
-    Ares.TapFormFeature(feature.task.haoyou.icon);
+    Ares2.TapFormFeature(feature.好友.图标);
     Ares2.Sleep(2);
+    
     -- 打开邮件
-    Ares.TapFormFeature(feature.task.haoyou.youjian.icon);
-    Ares.TapFormFeature(feature.task.haoyou.youjian.icon);
+    Ares2.TapFormFeature(feature.好友.邮件.图标);
     Ares2.Sleep(2);
     -- 一键领取
-    Ares.TapFormFeature(feature.task.haoyou.youjian.yijianlingqu);
-    -- 关闭提示界面
-    Ares.TapFormFeature(feature.task.haoyou.youjian.yijianlingqu);
+    
+    Ares2.Find.MultiColor(feature.好友.邮件.一键领取,true)
+     
+    Ares2.TapFormFeature(feature.好友.邮件.领取确认);
+     
     sleep(2000);
     -- 删除已读
-    Ares.TapFormFeature(feature.task.haoyou.youjian.shanchuyidu);
+    Ares2.TapFormFeature(feature.好友.邮件.删除已读);
+    
+    -- 查未读邮件
+    
+    while Ares2.Find.MultiColor(feature.好友.邮件.未读邮件,true) do
+		-- 点删除 
+		Ares2.TapFormFeature(feature.好友.邮件.删除未读);
+    end
+    
+    Ares2.TapFormFeature(feature.好友.邮件.退出);
+    
 end
 
 
@@ -3126,151 +3124,4 @@ function WuPinPaiMai()
 		-- 关闭背包框
 		Ares.TapFormFeature(feature.system.back2);
    end
-end
-function ui_setTasks()
-    -- 获取已选择的账号列表
-    local taskStr = "";
-    -- 签到领奖
-    local task1 = checkgetselected("task_qiandaolingjiang");
-    if task1 == true then
-        taskStr = taskStr.."签到领奖|"
-    end
-    
-    -- 装备强化
-    local task2 = checkgetselected("task_zhuangbeiqianghua");
-    if task2 == true then
-        taskStr = taskStr.."装备强化|"
-    end
-    
-    -- 批量熔炼
-    local task3 = checkgetselected("task_piliangronglian");
-    if task3 == true then
-        taskStr = taskStr.."批量熔炼|"
-	end
-    
-    -- 角色加点
-    local task4 = checkgetselected("task_juesejiadian");
-    if task4 == true then
-        taskStr = taskStr.."角色加点|"
-    end
-     
-    
-    -- 收取邮件
-    local task5 = checkgetselected("task_shouquyoujian");
-    if task5 == true then
-        taskStr = taskStr.."收取邮件|"
-    end
-    
-    -- 野战
-    local task6 = checkgetselected("task_yezhan");
-    if task6 == true then
-        taskStr = taskStr.."野战|"
-    end
-    
-    -- 竞技
-    local task7 = checkgetselected("task_jingji");
-    if task7 == true then
-        taskStr = taskStr.."竞技|"
-    end
-     
-    -- VIP BOSS
-    local task15 = checkgetselected("task_vipboss");
-    if task15 == true then
-        taskStr = taskStr.."VIPBOSS|"
-    end
-    
-    -- 神殿BOSS
-    local task8 = checkgetselected("task_shendianboss");
-    if task8 == true then
-        taskStr = taskStr.."神殿BOSS|"
-    end
-     
-     
-    -- 中立BOSS
-    local task18 = checkgetselected("task_zhongliboss");
-    if task18 == true then
-        taskStr = taskStr.."中立BOSS|"
-    end
-    
-    -- 人物升级
-    local task9 = checkgetselected("task_renwushengji");
-    if task9 == true then
-        taskStr = taskStr.."人物升级|"
-    end
-    
-    
-     
-     
-    
-    -- 装备副本
-    local task10 = checkgetselected("task_zhuangbeifuben");
-    if task10 == true then
-        taskStr = taskStr.."装备副本|"
-    end
-    
-     
-     
-    
-    -- 经验副本
-    local task11 = checkgetselected("task_jingyanfuben");
-    if task11 == true then
-        taskStr = taskStr.."经验副本|"
-    end
-    
-    
-    
-    -- 魂卡副本
-    local task17 = checkgetselected("task_hunkafuben");
-    if task17 == true then
-        taskStr = taskStr.."魂卡副本|"
-    end
-    
-    
-    -- 雷霆岛
-    local task12 = checkgetselected("task_leitingdao");
-    if task12 == true then
-        taskStr = taskStr.."雷霆岛|"
-    end
-    
-    
-    -- 雷霆岛
-    local task14 = checkgetselected("task_chongwuduihuan");
-    if task14 == true then
-        taskStr = taskStr.."宠物兑换|"
-    end
-    
-    
-    -- 工会护送
-    local task18 = checkgetselected("task_gonghuihusong");
-    if task18 == true then
-        taskStr = taskStr.."工会护送|"
-    end
-    
-	-- 领取活跃
-    local task13 = checkgetselected("task_lingquhuoyue");
-    if task13 == true then
-        taskStr = taskStr.."领取活跃|"
-    end
-    
-    
-     
-    -- 物品拍卖
-    local task16 = checkgetselected("task_wupinpaimai");
-    if task16 == true then
-        taskStr = taskStr.."物品拍卖|"
-    end
-    
-     
-     
-	taskStr = string.sub(taskStr,1,string.len(taskStr)-1);
-    
-	local qiehuan = checkgetselected("task_qiehuanzhanghao");
-    if qiehuan == true then
-		taskStr = taskStr.."|切换账号"
-    end
-    
-    -- 写入到配置文件
-    XM.WriteFile(Global.SourcePath.."tasks.txt",taskStr,true);
-
-	lineprint("uiFunctions.t",146,Global.SourcePath.."---"..taskStr)
 end

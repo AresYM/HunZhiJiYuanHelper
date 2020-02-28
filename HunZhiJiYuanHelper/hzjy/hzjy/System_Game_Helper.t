@@ -68,3 +68,37 @@ function InitGameIndex(success,fail)
 	end 
 end
 
+
+
+-- 重启程序
+function CheckGameStart()
+    KillGame()
+    -- 检测是不是在前台
+    if XM.Timer("CheckGameStart") then
+        local gameName = gettopapppackagenameex();
+        if gameName ~= Global.PackageName then
+            local isSuccess = sysstartapp(Global.PackageName);
+            sleep(3000);
+            if isSuccess == 0 then
+                messagebox("没有安装游戏")
+            end 
+        end
+    end
+end
+
+-- 杀死游戏进程
+function KillGame()
+    local gameName = gettopapppackagenameex();
+    if gameName == Global.PackageName then
+        syskillapp(gameName);
+    end
+end
+
+-- 仅启动游戏
+function StartGameOnly()
+    local gameName = gettopapppackagenameex();
+    if gameName ~= Global.PackageName then
+        sysstartapp(Global.PackageName);
+    end
+end
+ 
