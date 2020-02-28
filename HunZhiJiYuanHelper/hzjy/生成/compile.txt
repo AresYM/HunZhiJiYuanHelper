@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+69286716928671")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+88880628888062")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -301,6 +301,23 @@ feature_leidian ={
             退出 = {692,227,1}
 		},
     },
+    背包 = {
+		图标 = {561,1238,1},
+        拍卖 = {
+			物品4可用 = {"物品4可用",436,234,522,259,"D14343-000000","12|0|D24343-000000,19|0|D54343-000000,32|0|D84343-000000"},
+            物品4过期 = {"物品4过期",450,236,534,315,"686868-000000","7|7|6A6A6A-000000,16|14|909090-000000,27|25|6D6D6D-000000"},
+            使用 = {584,315,1},
+            批量未完成 = {"批量未完成",488,385,602,499,"D54343-000000","11|-1|DD4343-000000,30|15|FAE079-000000,46|34|DC4343-000000"},
+            批量过期 = {"批量过期",560,860,696,924,"9F9F9F-000000","0|28|ACACAC-000000,28|28|AFAFAF-000000,106|4|9E9E9E-000000"},
+            批量拿去拍卖 = {624,892,1},
+            批量自己使用 = {460,894,1},
+            关闭批量拍卖 = {644,336,1},
+            物品1可用 = {"物品1可用",80,239,147,261,"D14343-000000","7|0|D24343-000000,17|0|D54343-000000,26|0|D74343-000000"},
+            物品1过期 = {"物品1过期",74,242,161,271,"676767-000000","12|-1|676767-000000,27|2|696969-000000,41|9|696969-000000"},
+            单个自己使用 = {251,815,1},
+            单个拍卖 = {467,806,1}
+        }
+    },
 	login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
         h5_big = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111",0.9},
@@ -309,12 +326,7 @@ feature_leidian ={
         new_login={192,1044,524,1157,"开始冒险","ffffff-222222|cedaec-222222",0.9},
         old_login={192,1044,524,1157,"开始冒险","ffffff-222222|cedaec-222222",0.9}
     },
-    account = {
-		account1 = {0,0,720,1280,"账号1","333333-222222",1},
-		account2 = {0,0,720,1280,"账号2","333333-222222",1},
-		account3 = {0,0,720,1280,"账号3","333333-222222",0.9},
-		account4 = {0,0,720,1280,"账号4","333333-222222",1}
-    },
+     
     index = {
 		back1 = {649,1217,719,1276,"返回1","fcf4d8-222222|f2e0ae-222222",0.9},
 		back2 = {581,1052,703,1115,"返回2","e2ebdc-222222|f2e0ae-222222",0.9}
@@ -2598,38 +2610,6 @@ function RenWuShengJi()
 		end 
     end
 end
--- 收取邮件
-function ShouQuYouJian()
-    
-    -- 打开好友
-    Ares2.TapFormFeature(feature.好友.图标);
-    Ares2.Sleep(2);
-    
-    -- 打开邮件
-    Ares2.TapFormFeature(feature.好友.邮件.图标);
-    Ares2.Sleep(2);
-    -- 一键领取
-    
-    Ares2.Find.MultiColor(feature.好友.邮件.一键领取,true)
-     
-    Ares2.TapFormFeature(feature.好友.邮件.领取确认);
-     
-    sleep(2000);
-    -- 删除已读
-    Ares2.TapFormFeature(feature.好友.邮件.删除已读);
-    
-    -- 查未读邮件
-    
-    while Ares2.Find.MultiColor(feature.好友.邮件.未读邮件,true) do
-		-- 点删除 
-		Ares2.TapFormFeature(feature.好友.邮件.删除未读);
-    end
-    
-    Ares2.TapFormFeature(feature.好友.邮件.退出);
-    
-end
-
-
 -- 主线任务
 function Unit.State.TaskMainLine() 
     Ares.TapFormFeature(主线任务.任务)
@@ -2867,6 +2847,40 @@ function YeZhan()
         end
     end
 end
+-- 收取邮件
+function ShouQuYouJian()
+    
+    -- 打开好友
+    Ares2.TapFormFeature(feature.好友.图标);
+    Ares2.Sleep(2);
+    
+    -- 打开邮件
+    Ares2.TapFormFeature(feature.好友.邮件.图标);
+    Ares2.Sleep(2);
+    -- 一键领取
+    
+    Ares2.Find.MultiColor(feature.好友.邮件.一键领取,true)
+     
+    Ares2.TapFormFeature(feature.好友.邮件.领取确认);
+     
+    sleep(2000);
+    -- 删除已读
+    Ares2.TapFormFeature(feature.好友.邮件.删除已读);
+    
+    -- 查未读邮件
+    
+    while Ares2.Find.MultiColor(feature.好友.邮件.未读邮件,true) do
+		-- 点删除 
+		Ares2.TapFormFeature(feature.好友.邮件.删除未读);
+    end
+    
+    Ares2.TapFormFeature(feature.好友.邮件.退出);
+    
+    Ares2.MessageBox("邮件处理完毕")
+    
+end
+
+
 function ShuiJingYiJi()
     Ares2.TapFormFeature(feature.水晶遗迹.图标);
     Ares2.MessageBox("寻路中");
@@ -3084,7 +3098,62 @@ function PiLiangRongLian()
     -- 点击关闭按钮
     Ares.TapFormFeature(feature.task.beibao.ronglian.ronglian_guanbi)
 end
+
+
+-- 物品拍卖
 function WuPinPaiMai()
+	-- 打开背包
+	Ares2.TapFormFeature(feature.背包.图标);
+   
+	-- 验证第4个物品是不是拍品
+    
+    if Ares2.Find.MultiColor(feature.背包.拍卖.物品4可用,true) or Ares2.Find.MultiColor(feature.背包.拍卖.物品4过期,true) then
+        
+        Ares2.TapFormFeature(feature.背包.拍卖.使用);
+        while true do
+			if Ares2.Find.MultiColor(feature.背包.拍卖.批量未完成) then
+                Ares2.TapFormFeature(feature.背包.拍卖.批量拿去拍卖);
+			elseif Ares2.Find.MultiColor(feature.背包.拍卖.批量过期) then
+                Ares2.TapFormFeature(feature.背包.拍卖.批量自己使用);
+            else
+                Ares2.MessageBox("拍卖处理完成");
+                -- 关闭拍卖框
+                Ares2.TapFormFeature(feature.背包.拍卖.关闭批量拍卖);
+                -- 关闭背包框
+                Ares2.TapFormFeature(feature.system.back2);
+                break;
+            end
+       end
+        
+	else
+        while true do
+            local isBreak = true;
+            if Ares2.Find.MultiColor(feature.背包.拍卖.物品1可用,true) then
+				Ares2.TapFormFeature(feature.背包.拍卖.使用);
+                Ares2.TapFormFeature(feature.背包.拍卖.单个拍卖);
+                isBreak = false;
+			end
+            
+            if Ares2.Find.MultiColor(feature.背包.拍卖.物品1过期,true) then 
+				Ares2.TapFormFeature(feature.背包.拍卖.使用);
+                Ares2.TapFormFeature(feature.背包.拍卖.单个自己使用);
+                isBreak = false;
+			end  
+            
+            if	isBreak then
+				break;
+            end
+        end
+		Ares2.MessageBox("拍卖处理完成");
+		-- 关闭背包框
+		Ares2.TapFormFeature(feature.system.back2);
+	end
+    
+end
+
+
+
+function WuPinPaiMai2()
    -- 打开背包
    Ares.TapFormFeature(feature.task.beibao.icon);
    
@@ -3125,3 +3194,4 @@ function WuPinPaiMai()
 		Ares.TapFormFeature(feature.system.back2);
    end
 end
+
