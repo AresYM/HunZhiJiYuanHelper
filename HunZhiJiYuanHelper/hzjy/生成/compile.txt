@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+88880628888062")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+93231409323140")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -2592,24 +2592,6 @@ function JueSeJiaDian()
     Ares.MessageBox("角色加点操作完毕",2);
     
 end
--- 人物升级
-function RenWuShengJi()
-    -- 点开经验池
-    Ares.TapFormFeature(feature.task.jingyanchi.icon);
-    
-    while true do
-		local a = MyFindMultiColor(feature.task.jingyanchi.shengji.juese1,true);
-		local b = MyFindMultiColor(feature.task.jingyanchi.shengji.juese2,true);
-		local c = MyFindMultiColor(feature.task.jingyanchi.shengji.juese3,true);
-		local d = MyFindMultiColor(feature.task.jingyanchi.shengji.juese4,true);
-		local e = MyFindMultiColor(feature.task.jingyanchi.shengji.juese5,true);
-        
-        if a == false and b == false and c == false and d == false and e == false then 
-            Ares.MessageBox("人物升级完成")
-            break;
-		end 
-    end
-end
 -- 主线任务
 function Unit.State.TaskMainLine() 
     Ares.TapFormFeature(主线任务.任务)
@@ -3098,8 +3080,6 @@ function PiLiangRongLian()
     -- 点击关闭按钮
     Ares.TapFormFeature(feature.task.beibao.ronglian.ronglian_guanbi)
 end
-
-
 -- 物品拍卖
 function WuPinPaiMai()
 	-- 打开背包
@@ -3148,50 +3128,32 @@ function WuPinPaiMai()
 		-- 关闭背包框
 		Ares2.TapFormFeature(feature.system.back2);
 	end
+end
+-- 人物升级
+function RenWuShengJi()
+    -- 点开经验池
+    Ares2.TapFormFeature(feature.task.jingyanchi.icon);
     
+    local retryTimes = 0;
+    
+    while true do
+        if retryTimes > 20 then
+            Ares2.MessageBox("人物升级次数过多，停止升级");
+			Ares2.TapFormFeature(feature.system.back2);
+            break;
+		end
+		local a = Ares2.Find.MultiColor(feature.task.jingyanchi.shengji.juese1,true);
+		local b = Ares2.Find.MultiColor(feature.task.jingyanchi.shengji.juese2,true);
+		local c = Ares2.Find.MultiColor(feature.task.jingyanchi.shengji.juese3,true);
+		local d = Ares2.Find.MultiColor(feature.task.jingyanchi.shengji.juese4,true);
+		local e = Ares2.Find.MultiColor(feature.task.jingyanchi.shengji.juese5,true);
+        retryTimes = retryTimes + 1;
+        if a == false and b == false and c == false and d == false and e == false then 
+            Ares2.MessageBox("人物升级完成");
+            -- 返回
+			Ares2.TapFormFeature(feature.system.back2);
+            
+            break;
+		end 
+    end
 end
-
-
-
-function WuPinPaiMai2()
-   -- 打开背包
-   Ares.TapFormFeature(feature.task.beibao.icon);
-   
-   -- 验证第五个物品是不是拍品   
-   local wupin4 = Ares.FindMultiColorWithTap(feature.task.beibao.paimai.wupin4);
-   local wupin4_outtime = Ares.FindMultiColorWithTap(feature.task.beibao.paimai.wupin4_outtime)
-   local wupin1 = Ares.FindMultiColorWithTap(feature.task.beibao.paimai.wupin1);
-   
-   -- 如果是拍卖物品
-   if wupin4 == true or wupin4_outtime == true then
-       -- 点开 并上架
-       Ares.TapFormFeature(feature.task.beibao.paimai.wupin4_click);
-       
-       Ares.TapFormFeature(feature.task.beibao.paimai.wupin_shiyong);
-       
-       while true do
-			if Ares.FindMultiColorWithTap(feature.task.beibao.paimai.piliang_weiwancheng) == true then
-                Ares.TapFormFeature(feature.task.beibao.paimai.piliang_naqupaimai);
-			elseif Ares.FindMultiColorWithTap(feature.task.beibao.paimai.piliang_guoqi) == true then
-                Ares.TapFormFeature(feature.task.beibao.paimai.piliang_zijishiyong);
-            else
-                Ares.MessageBox("拍卖处理完成");
-                -- 关闭拍卖框
-                Ares.TapFormFeature(feature.task.beibao.paimai.paimai_guanbi);
-                -- 关闭背包框
-                Ares.TapFormFeature(feature.system.back2);
-                break;
-            end
-       end
-   else
-		while Ares.FindMultiColorWithTap(feature.task.beibao.paimai.wupin1) == true do
-            Ares.TapFormFeature(feature.task.beibao.paimai.wupin1_click);
-			Ares.TapFormFeature(feature.task.beibao.paimai.wupin_shiyong);
-			Ares.TapFormFeature(feature.task.beibao.paimai.dange_naqupaimai);
-        end
-		Ares.MessageBox("拍卖处理完成");
-		-- 关闭背包框
-		Ares.TapFormFeature(feature.system.back2);
-   end
-end
-
