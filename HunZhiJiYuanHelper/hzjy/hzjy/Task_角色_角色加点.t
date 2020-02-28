@@ -7,12 +7,8 @@ function JueSeJiaDian()
     Ares.TapFormFeature(feature.角色.图标);
     Ares2.Sleep(2);
     
-	local x = 130 y = 212;
-    
-    
     for i=1,5,1 do
-        x = 130 + (i - 1) * 122;
-        lineprint("x:"..x.." y:"..y)
+        local x = 130 + (i - 1) * 122;
         -- 点击人物头像
         Ares2.Tap(x,212)
         Ares2.Sleep(1);
@@ -30,8 +26,6 @@ function JueSeJiaDian()
 			-- 点击保存
 			Ares2.TapFormFeature(feature.角色.加点.保存);
 		end
-        
-         
     end
  
     Ares2.TapFormFeature(feature.system.back2);
