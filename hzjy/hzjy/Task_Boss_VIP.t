@@ -2,40 +2,40 @@
     local index = 1;
     while true do
         -- 点击BOSS 
-        Ares.TapFormFeature(feature.task.boss.icon);
+        Ares2.TapFormFeature(feature.BOSS.图标);
         -- 点击VIP页签
-        Ares.TapFormFeature(feature.task.boss.vip.icon);
+        Ares2.TapFormFeature(feature.BOSS.VIP.图标);
         
         -- 上推 显示全部
-        XM.Swipe(360,880,360,540,4,1000);
-        sleep(2000);
-        
+        Ares2.Swipe(360,880,360,540,4,1);
+        Ares2.Sleep(2);
+		
         -- 打boss
         local isFindBoss = false;
-        XM.KeepScreen(0);
         if index == 1 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss1,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS1,true);
         elseif index == 2 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss2,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS2,true);
         elseif index == 3 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss3,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS3,true);
         elseif index == 4 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss4,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS4,true);
         else
             -- 点返回按钮
-            Ares.TapFormFeature(feature.system.return_back_click);
+            Ares2.TapFormFeature(feature.system.back2);
             break;
         end
         if isFindBoss == true then 
-			Ares.MessageBox("开始挑战VIP BOSS "..index);
+			Ares2.MessageBox("开始挑战VIP BOSS "..index);
 
 			while CheckIsGameIndexPage() == false do
-				Ares.Sleep(1)
-				Ares.MessageBox("VIP BOSS "..index.."挑战中");
+				Ares2.Sleep(1)
+				Ares2.MessageBox("VIP BOSS "..index.."挑战中");
 			end
         end 
         index = index + 1;
 		
     end
     
+	Ares2.MessageBox("VIP BOSS 挑战完毕");
 end

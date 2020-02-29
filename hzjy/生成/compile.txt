@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+1715276517152765")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+1814382818143828")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -268,6 +268,14 @@ feature_leidian ={
           
             挑战按钮 = {"挑战按钮",540,396,718,1088,"EF9110-000000","0|14|F49B21-000000,16|8|F29719-000000,22|10|FFFFFF-000000"}
 			 
+        },
+        VIP = {
+			图标 = {66,1224,1,true},
+			BOSS1 = {"BOSS1",90,550,300,640,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS2 = {"BOSS2",428,554,622,634,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS3 = {"BOSS3",108,1018,302,1098,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS4 = {"BOSS4",418,1016,630,1094,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"}
+
         }
     },
     水晶遗迹 = {
@@ -2142,7 +2150,6 @@ function InitTasks()
 		{id = "task_zhongliboss",value = "中立BOSS"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
-        
 		{id = "task_fubenzhengheban",value = "副本整合版"},
 		{id = "task_zhuangbeifuben",value = "装备副本"},
 		{id = "task_jingyanfuben",value = "经验副本"},
@@ -2322,43 +2329,44 @@ function VipBoss()
     local index = 1;
     while true do
         -- 点击BOSS 
-        Ares.TapFormFeature(feature.task.boss.icon);
+        Ares2.TapFormFeature(feature.BOSS.图标);
         -- 点击VIP页签
-        Ares.TapFormFeature(feature.task.boss.vip.icon);
+        Ares2.TapFormFeature(feature.BOSS.VIP.图标);
         
         -- 上推 显示全部
-        XM.Swipe(360,880,360,540,4,1000);
-        sleep(2000);
-        
+        Ares2.Swipe(360,880,360,540,4,1);
+        Ares2.Sleep(2);
+		
         -- 打boss
         local isFindBoss = false;
-        XM.KeepScreen(0);
         if index == 1 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss1,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS1,true);
         elseif index == 2 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss2,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS2,true);
         elseif index == 3 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss3,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS3,true);
         elseif index == 4 then
-            isFindBoss = Ares.FindMultiColorWithTap(feature.task.boss.vip.boss4,true);
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS4,true);
         else
             -- 点返回按钮
-            Ares.TapFormFeature(feature.system.return_back_click);
+            Ares2.TapFormFeature(feature.system.back2);
             break;
         end
         if isFindBoss == true then 
-			Ares.MessageBox("开始挑战VIP BOSS "..index);
+			Ares2.MessageBox("开始挑战VIP BOSS "..index);
 
 			while CheckIsGameIndexPage() == false do
-				Ares.Sleep(1)
-				Ares.MessageBox("VIP BOSS "..index.."挑战中");
+				Ares2.Sleep(1)
+				Ares2.MessageBox("VIP BOSS "..index.."挑战中");
 			end
         end 
         index = index + 1;
 		
     end
     
+	Ares2.MessageBox("VIP BOSS 挑战完毕");
 end
+
 function ZhongLiBoss()
     while true do
         -- 在游戏首页 点boss按钮

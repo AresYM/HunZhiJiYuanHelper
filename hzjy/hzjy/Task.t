@@ -220,7 +220,6 @@ function InitTasks()
 		{id = "task_zhongliboss",value = "中立BOSS"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
-        
 		{id = "task_fubenzhengheban",value = "副本整合版"},
 		{id = "task_zhuangbeifuben",value = "装备副本"},
 		{id = "task_jingyanfuben",value = "经验副本"},
