@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+1536701515367015")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+1715276517152765")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -360,6 +360,16 @@ feature_leidian ={
         全部完成 = {"野战全部完成",567,413,636,481,"DF4003-111111","1|12|DA3A02-111111,17|13|FFD97E-111111,34|13|D93902-111111"},
             
     },
+    竞技 = {
+		图标 = {676,648,1},
+        竞技商店 = {"竞技商店",96,1052,178,1111,"ED5555-111111","-5|8|FF4B4B-111111,13|1|F05757-111111,7|8|FBB2B2-111111,-6|28|C0602D-111111,27|19|D4993F-111111"},
+        每日奖励 = {266,252,1},
+        领奖 = {348,1094,1},
+        匹配对手页 = {122,258,1},
+        匹配对手按钮 = {372,1088,1},
+        次数用尽 = {"次数用尽",569,419,638,481,"DE3F02-111111","-1|23|CD2C01-111111,19|24|CC2B01-111111,18|8|FFD778-111111,21|-22|1E2F42-111111"},
+		关闭 = {630,179,1}
+    },
 	login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
         h5_big = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111",0.9},
@@ -513,28 +523,7 @@ feature_leidian ={
                 dianquanjiaxue = {"点券加血按钮",106,944,184,1007,"7E2C23-000000","14|-16|7F2D23-000000,17|10|C30D07-000000,6|28|FFE3FC-000000"}
             }
         },
-        -- 野战
-        yezhan = {
-			icon = {582,654,1},
-            success_current = {"完成本次野战",19,1126,74,1174,"FFFDF0-000000","1|6|FFEFBC-000000,0|15|FFD766-000000,0|25|5A2603-000000",0.9,0},
-            success_in = {"进入野战",52,209,98,295,"C36631-000000","-9|46|C1602F-000000,0|62|ECBC36-000000,25|45|C76231-000000",0.9,0},
-			complete_all = {"野战全部完成",567,413,636,481,"DF4003-000000","1|12|DA3A02-000000,17|13|FFD97E-000000,34|13|D93902-000000",0.9,0},
-            icon_pic = {"野战图标",535,518,625,606,"野战.bmp","000000",0.6,0},
-            tiaozhan = {582,902,1},
-            tiaoguo = {656,204,1},
-            queding = {418,893,1}
-            
-        },
-        -- 竞技
-        jingji = {
-			icon = {676,648,1},
-			tab_pipei = {122,258,1},
-            tab_jiangli = {266,252,1},
-            tab_jiangli_lingqu = {348,1094,1},
-			pipeiduishou = {372,1088,1},
-            success_current = {"完成本次竞技",586,148,666,213,"DA3B02-000000","19|0|FFE090-000000,34|0|DA3B02-000000",0.9,0},
-            complete_all = {"竞技全部完成",569,419,638,481,"DE3F02-000000","-1|23|CD2C01-000000,19|24|CC2B01-000000,18|8|FFD778-000000,21|-22|1E2F42-000000",0.9,0}
-        },
+        
 		-- 魂卡
         hunka = {
 			icon = {167,1234,1}
@@ -1467,8 +1456,6 @@ end
 function InitGameIndex(success,fail)
 	-- 关闭一些异常的窗口
 	CloseAllDialogAndBackToIndex();
-    
-    
     
 	-- 检测是不是首页
     if CheckIsGameIndexPage() == false then
@@ -2694,53 +2681,6 @@ function GongHuiHuSong()
 	Ares.TapFormFeature(feature.system.return_down_icon);
     
 end
--- 竞技
-function JingJi()    
-    -- 点竞技按钮
-	Ares.TapFormFeature(feature.task.jingji.icon);
-    
-    -- 等待进入竞技界面
-    while MyFindMultiColor(feature.task.jingji.success_current) == false do
-        Ares.MessageBox("竞技寻路中。。。")
-        sleep(1000)
-    end
-    
-    -- 先领取奖励
-	Ares.TapFormFeature(feature.task.jingji.tab_jiangli);
-	-- 领取
-	Ares.TapFormFeature(feature.task.jingji.tab_jiangli_lingqu);
-	-- 领取
-	Ares.TapFormFeature(feature.task.jingji.tab_jiangli_lingqu);
-	-- 跳回匹配对手
-	Ares.TapFormFeature(feature.task.jingji.tab_pipei);
-    
-    -- 开始循环匹配
-    while true do
-
-        
-        -- 点击匹配按钮
-        Ares.TapFormFeature(feature.task.jingji.pipeiduishou);
-        
-		-- 检测是否已经完成了
-		if MyFindMultiColor(feature.task.jingji.complete_all) == true then
-            Ares.MessageBox("竞技已经完成")
-            break;
-		end 
-        
-        -- 检测是不是在正在挑战界面
-        while CheckHasGoOutButton() == true do
-            Ares.MessageBox("竞技挑战中。。。")
-            sleep(1000)
-        end
-        
-        -- 检测是不是完成了本次竞技
-        while  MyFindMultiColor(feature.task.jingji.success_current) == false do
-            sleep(1000);
-        end
-        
-    end
-end
-
 -- 收取邮件
 function ShouQuYouJian()
     
@@ -2815,6 +2755,68 @@ function ShuiJingYiJi()
 	end 
     
 end
+-- 竞技
+function JingJi()    
+    -- 点竞技按钮
+	Ares2.TapFormFeature(feature.竞技.图标);
+    
+    -- 等待进入竞技界面
+    while Ares2.Find.MultiColor(feature.竞技.竞技商店) == false do
+        Ares2.MessageBox("竞技寻路中。。。")
+        Ares2.Sleep(1)
+    end
+    
+    -- 先领取奖励
+	Ares2.TapFormFeature(feature.竞技.每日奖励);
+	-- 领取
+	Ares2.TapFormFeature(feature.竞技.领奖);
+	Ares2.TapFormFeature(feature.竞技.领奖);
+    
+    Ares2.Sleep(2);
+    
+    
+	-- 跳回匹配对手
+	Ares2.TapFormFeature(feature.竞技.匹配对手页);
+    
+    -- 开始循环匹配
+    while true do
+        
+        -- 点击匹配按钮
+        Ares2.TapFormFeature(feature.竞技.匹配对手按钮);
+        
+		-- 检测是否已经完成了
+		if Ares2.Find.MultiColor(feature.竞技.次数用尽) then
+            Ares2.MessageBox("竞技已经完成");
+            
+            Ares2.TapFormFeature(feature.竞技.关闭);
+            break;
+		end 
+        local retryTimes = 0;
+        local isError = false;
+        
+        while Ares2.Find.MultiColor(feature.竞技.竞技商店) == false do
+            if retryTimes > 30 then 
+                isError = true;
+                break;
+			end 
+			Ares2.MessageBox("竞技挑战中。。。")
+			Ares2.Sleep(1)
+            retryTimes = retryTimes + 1;
+		end
+        
+        if isError then
+            Ares2.MessageBox("竞技出错，进行下一任务");
+            Ares2.TapFormFeature(feature.竞技.关闭);
+            break;
+        else
+            Ares2.Sleep(2)
+		end 
+        
+    end
+    
+	Ares2.TapFormFeature(feature.竞技.关闭);
+end
+
 function ShiLianTa()
     
 	-- 点击试炼塔图标
@@ -2856,8 +2858,6 @@ function YeZhan()
         
         -- 点击挑战按钮
         Ares2.TapFormFeature(feature.野战.挑战);
-        
-        
         
         -- 检测是否已经完成了
 		if Ares2.Find.MultiColor(feature.野战.全部完成,true) == true then

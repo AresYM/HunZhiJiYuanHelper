@@ -45,8 +45,6 @@ function InitGameIndex(success,fail)
 	-- 关闭一些异常的窗口
 	CloseAllDialogAndBackToIndex();
     
-    
-    
 	-- 检测是不是首页
     if CheckIsGameIndexPage() == false then
         local x1 = -1 y1 = -1;
