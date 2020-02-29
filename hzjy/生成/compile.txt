@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+1348935913489359")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+1536701515367015")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -350,6 +350,15 @@ feature_leidian ={
 			等级不足 = {"等级不足",282,1026,453,1092,"6984D5-111111","-1|20|759CE1-111111,10|30|7BA9E7-111111",0.9,0}
 
         }
+    },
+    野战 = {
+		图标Vip6 = {"图标Vip6",540,522,596,575,"D8D1BC-111111","2|1|F4EDB7-111111,-1|11|9F5B14-111111,8|9|6886D2-111111,12|3|B06E1A-111111,18|15|DEE6E8-111111"},
+		图标Vip7 = {"图标Vip7",545,619,602,672,"D8D1BC-111111","2|1|F4EDB7-111111,-1|11|9F5B14-111111,8|9|6886D2-111111,12|3|B06E1A-111111,18|15|DEE6E8-111111"},
+		挑战 = {582,902,1},
+        跳过 = {"跳过野战",597,178,713,289,"FFEFB9-111111","4|10|FDE192-111111,4|20|F9D44E-111111,20|6|FFEBA7-111111,54|0|FFEFB9-111111,60|54|FFFBEA-111111"},
+		关闭结果提示 = {356,1091,1},
+        全部完成 = {"野战全部完成",567,413,636,481,"DF4003-111111","1|12|DA3A02-111111,17|13|FFD97E-111111,34|13|D93902-111111"},
+            
     },
 	login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
@@ -2732,58 +2741,6 @@ function JingJi()
     end
 end
 
--- 野战
-function YeZhan()
-    -- 开始循环匹配
-    while true do
-        -- 点野战按钮
-		Ares.TapFormFeature(feature.task.yezhan.icon);
-		
-		local retryTimes = 1;
-        local isBreak = false;
-        
-		-- 等待进入野战界面
-		while MyFindMultiColor(feature.task.yezhan.success_in) == false do
-            if retryTimes >= 10 then
-                Ares.TapFormFeature(feature.task.yezhan.icon);
-			end
-            
-            if retryTimes >= 20 then
-                isBreak = true;
-				Ares.MessageBox("野战寻路异常")
-                break;
-			end
-			Ares.MessageBox("野战寻路中。。。")
-            retryTimes = retryTimes + 1;
-			sleep(1000)
-		end
-        
-        if isBreak == true then 
-			Ares.MessageBox("野战寻路异常,进行下一任务")
-            break;
-		end 
-        
-        -- 滑倒最简单的那个
-		XM.Swipe(360,880,360,540,4,1000);
-        sleep(2000)
-        
-        -- 点击挑战按钮
-        Ares.TapFormFeature(feature.task.yezhan.tiaozhan);
-        
-        -- 检测是否已经完成了
-		if MyFindMultiColor(feature.task.yezhan.complete_all) == true then
-            Ares.MessageBox("野战已经完成")
-            break;
-		end
-        
-        -- 检测是不是完成了本次竞技
-        while  MyFindMultiColor(feature.task.yezhan.success_current) == false do
-            Ares.TapFormFeature(feature.task.yezhan.tiaoguo);
-            Ares.TapFormFeature(feature.task.yezhan.queding);
-            sleep(1000);
-        end
-    end
-end
 -- 收取邮件
 function ShouQuYouJian()
     
@@ -2882,6 +2839,66 @@ function ShiLianTa()
 		end
     end
     
+end
+-- 野战
+function YeZhan()
+    -- 开始循环匹配
+    while true do
+        -- 点野战按钮
+		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip6,true);
+		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip7,true);
+        Ares2.Sleep(1);
+        
+        -- 滑倒最简单的那个
+		Ares2.Swipe(360,880,360,540,4,1);
+        
+        Ares2.Sleep(2);
+        
+        -- 点击挑战按钮
+        Ares2.TapFormFeature(feature.野战.挑战);
+        
+        
+        
+        -- 检测是否已经完成了
+		if Ares2.Find.MultiColor(feature.野战.全部完成,true) == true then
+            Ares2.MessageBox("野战已经完成")
+			-- 关闭
+			Ares2.TapFormFeature(feature.system.back2);
+            break;
+		end 
+		
+		local retryTimes = 1;
+        local isBreak = false;
+        
+        
+        while Ares2.Find.MultiColor(feature.野战.跳过,true) == false do
+            if retryTimes >= 20 then
+                isBreak = true;
+				Ares2.MessageBox("野战挑战异常")
+                break;
+			end
+            Ares2.MessageBox("野战寻路中。。。")
+            retryTimes = retryTimes + 1;
+        end
+        
+        if isBreak == true then 
+			Ares.MessageBox("野战挑战异常,进行下一任务")
+            break;
+		end 
+        
+        
+        -- 胜利或失败的确定按钮
+        
+        Ares2.TapFormFeature(feature.野战.关闭结果提示);
+        
+		-- 等待返回游戏首页
+        
+        while CheckIsGameIndexPage() == false do
+             Ares2.MessageBox("等待野战结束。。。");
+             Ares2.Sleep();
+        end
+        
+    end
 end
 function FuBenZhengHeBan()
     
