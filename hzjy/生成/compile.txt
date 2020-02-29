@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+1814382818143828")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+1998068719980687")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -378,7 +378,33 @@ feature_leidian ={
         次数用尽 = {"次数用尽",569,419,638,481,"DE3F02-111111","-1|23|CD2C01-111111,19|24|CC2B01-111111,18|8|FFD778-111111,21|-22|1E2F42-111111"},
 		关闭 = {630,179,1}
     },
-	login = {
+	福利 = {
+		图标 = {50,246,1},
+        签到 = {
+			图标 = {81,1177,1},
+            有奖励 = {"有奖励",87,1130,126,1166,"F2603F-111111","12|-1|DF4B2D-111111,6|7|CB2309-111111,8|4|D9472C-111111"},
+            可领取 = {"可领取",0,304,716,876,"96CD5B-000000","-3|17|437B11-000000,-1|62|C5753A-000000"},
+            返回 = {}
+        },
+        祈福 = {
+			图标 = {222,1172,1},
+			灵币祈福 = {572,932,1}
+        }
+    },
+    日常 = {
+		图标 = {679,379,1},
+        定位点 = {"定位点",198,185,322,285,"E68642-111111","7|8|DE7B3F-111111,21|12|BF4F21-111111,30|14|C14A20-111111,23|-10|F0944D-111111,45|-41|5EECE1-111111"},
+		关闭 = {"关闭",644,116,705,171,"BE5C5B-111111","15|-12|F08D75-111111,30|2|B9595A-111111,13|20|B24D4C-111111,15|3|EED8B6-111111"},
+        不可领取 = {"前往按钮",522,352,672,416,"749BE0-000000","12|-1|7399DF-000000,28|0|B5CAEF-000000,47|0|FEFFFF-000000",0.9,0},
+		yiwancheng = {"可领取活跃",34,318,117,401,"DA4343-000000","17|-7|FBDC74-000000,35|-1|DC4343-000000",0.9,0},
+		领取 = {594,388,1},
+		jiangli1 = {156,935,1},
+		jiangli2 = {259,933,1},
+		jiangli3 = {358,936,1},
+		jiangli4 = {483,930,1},
+		jiangli5 = {643,936,1},
+    },
+    login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
         h5_big = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111",0.9},
         game_icon = {0,0,720,1280,"魂之纪元","474747-222222",0.9},
@@ -396,17 +422,7 @@ feature_leidian ={
 		vip_boss = {479,716,658,958,"前往-VIP Boss","845226-222222",0.9}
     },
     task = {
-		-- 福利
-        fuli = {
-			icon = {50,246,1},
-            meiriqiandao = {
-				qiandaolingjiang = {"签到领奖",0,304,716,876,"96CD5B-000000","-3|17|437B11-000000,-1|62|C5753A-000000",0.9,0}
-            },
-            qifuxuyuan = {
-				icon = {222,1172,1},
-                lingbiqifu = {572,932,1}
-            }
-        },
+		 
 		-- 角色
         juese = {
 			icon = {73,1224,1},
@@ -511,13 +527,7 @@ feature_leidian ={
 				success = {"神殿挑战完成",250,512,476,574,"C76131-000000","-2|20|C46731-000000,60|16|E3AE58-000000,118|0|C66131-000000,122|20|BF5E2E-000000"},
                 success_click = {316,1036,1}
             },
-            vip = {
-				icon = {66,1224,1},
-                boss1 = {"BOSS1",90,550,300,640,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss2 = {"BOSS2",428,554,622,634,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss3 = {"BOSS3",108,1018,302,1098,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss4 = {"BOSS4",418,1016,630,1094,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0}
-            },
+            
             zhongli = {
 				icon = {188,1234,1},
                 index = {"中立BOSS首页",422,260,718,378,"E2AC4F-000000","18|-2|E6AD50-000000,158|-100|C76330-000000,158|-78|BB5A2B-000000,188|-88|C05B2A-000000"},
@@ -2483,74 +2493,6 @@ function ChongWuDuiHuan()
         
     end
 end
-function LingQuHuoYue()
-    -- 点击领取活跃按钮
-	Ares.TapFormFeature(feature.task.huoyue.icon);
-    local retryTimes = 0;
-    while true do
-        -- 验证有没有待领取的活跃值
-        local x = -1 y = -1;
-		XM.KeepScreen(0);
-        x,y = Ares.FindMultiColor(feature.task.huoyue.bukelingqu);
-        sleep(1000);
-        -- 点击领取
-		if x<0 and y<0 then
-			Ares.TapFormFeature(feature.task.huoyue.lingqu);
-            if retryTimes > 20 then
-                Ares.MessageBox("活跃领取异常，程序退出")
-                break;
-			end
-		else
-			Ares.MessageBox("活跃领取完毕")
-			break;
-        end
-        retryTimes = retryTimes + 1;
-    end
-    if retryTimes < 20 then 
-        -- 领取活跃奖励
-		Ares.TapFormFeature(feature.task.huoyue.jiangli1);
-		Ares.TapFormFeature(feature.task.huoyue.jiangli2);
-		Ares.TapFormFeature(feature.task.huoyue.jiangli3);
-		Ares.TapFormFeature(feature.task.huoyue.jiangli4);
-		Ares.TapFormFeature(feature.task.huoyue.jiangli5);
-	end
-
-	
-    
-end
--- 签到领奖
-function QianDaoLingJiang()
-    -- 打开福利
-    Ares.TapFormFeature(feature.task.fuli.icon);
-	local rows = 8;
-    -- 拉到最下面
-    swipe(feature.system.swipeUp[1],feature.system.swipeUp[2],feature.system.swipeUp[3],feature.system.swipeUp[4]);	 
-    -- 一点一点的往下找 可领取三个字
-    for i=1,rows,1 do
-        Ares.Sleep(1);
-		-- 找领取的小图标
-		if Ares.FindMultiColorWithTap(feature.task.fuli.meiriqiandao.qiandaolingjiang,true) then
-            break;
-        else
-            XM.Swipe(178,488,178,312,4,1000);
-            Ares.Sleep(1)
-        end
-    end
-    
-    
-	-- 摇钱树 
-    Ares.TapFormFeature(feature.task.fuli.qifuxuyuan.icon);
- 
-    Ares.TapFormFeature(feature.task.fuli.qifuxuyuan.lingbiqifu);
-    
-    
-    -- 点返回
-    Ares.TapFormFeature(feature.system.back1);
-    Ares.TapFormFeature(feature.system.back1);
-    
-    
-end
-
 -- 主线任务
 function Unit.State.TaskMainLine() 
     Ares.TapFormFeature(主线任务.任务)
@@ -3054,6 +2996,81 @@ function ChangeAccount()
 		end  
 	else
 		return "OpenGame"
+	end
+end
+-- 签到领奖
+function QianDaoLingJiang()
+    -- 打开福利
+    Ares2.TapFormFeature(feature.福利.图标);
+    
+    -- 切换签到页
+    Ares2.TapFormFeature(feature.福利.签到.图标);
+    
+    
+    
+    if Ares2.Find.MultiColor(feature.福利.签到.有奖励) == false then
+		Ares2.MessageBox("无奖励");
+        return;
+    end
+    
+	local rows = 8;
+    -- 拉到最下面
+    swipe(feature.system.swipeUp[1],feature.system.swipeUp[2],feature.system.swipeUp[3],feature.system.swipeUp[4]);	 
+    
+    
+    -- 一点一点的往下找 可领取三个字
+    for i=1,rows,1 do
+        Ares2.Sleep(1);
+		-- 找领取的小图标
+		if Ares2.Find.MultiColor(feature.福利.签到.可领取,true) then
+            break;
+        else
+            Ares2.Swipe(178,488,178,312,4,1);
+            Ares2.Sleep(1)
+        end
+    end
+    
+    
+	-- 摇钱树 
+    Ares2.TapFormFeature(feature.福利.祈福.图标);
+ 
+    Ares2.TapFormFeature(feature.福利.祈福.灵币祈福);
+    
+    
+    -- 点返回
+    Ares2.TapFormFeature(feature.system.back1);
+    Ares2.TapFormFeature(feature.system.back1);
+    
+    
+end
+
+function LingQuHuoYue()
+    -- 点击领取活跃按钮
+	Ares.TapFormFeature(feature.日常.图标);
+    local retryTimes = 0;
+    while true do
+        -- 验证有没有待领取的活跃值
+        if retryTimes > 20 then
+			Ares2.MessageBox("活跃领取异常，程序退出")
+			break;
+		end
+        
+		if Ares2.Find.MultiColor(feature.日常.不可领取) == false then
+           Ares2.TapFormFeature(feature.日常.领取);
+		else
+			Ares2.MessageBox("活跃领取完毕")
+			break;
+		end
+        retryTimes = retryTimes + 1;
+    end
+    
+    if retryTimes < 20 then 
+        -- 领取活跃奖励
+		Ares2.TapFormFeature(feature.日常.jiangli1);
+		Ares2.TapFormFeature(feature.日常.jiangli2);
+		Ares2.TapFormFeature(feature.日常.jiangli3);
+		Ares2.TapFormFeature(feature.日常.jiangli4);
+		Ares2.TapFormFeature(feature.日常.jiangli5);
 	end
 end
 -- 批量熔炼
