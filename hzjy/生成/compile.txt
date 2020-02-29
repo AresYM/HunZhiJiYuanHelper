@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+2633990626339906")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+2753439027534390")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -331,8 +331,8 @@ feature_leidian ={
             批量拿去拍卖 = {624,892,1},
             批量自己使用 = {460,894,1},
             关闭批量拍卖 = {644,336,1},
-            物品1可用 = {"物品1可用",80,239,147,261,"D14343-000000","7|0|D24343-000000,17|0|D54343-000000,26|0|D74343-000000"},
-            物品1过期 = {"物品1过期",74,242,161,271,"676767-000000","12|-1|676767-000000,27|2|696969-000000,41|9|696969-000000"},
+            物品1可用 = {"物品1可用",80,239,147,261,"D14343-111111","7|0|D24343-111111,17|0|D54343-111111,26|0|D74343-111111"},
+            物品1过期 = {"物品1过期",74,242,161,271,"676767-111111","12|-1|676767-111111,27|2|696969-111111,41|9|696969-111111"},
             单个自己使用 = {251,815,1},
             单个拍卖 = {467,806,1}
         },
@@ -341,7 +341,13 @@ feature_leidian ={
             是否有装备 = {"有可熔炼装备",96,345,177,415,"67BC12-111111","8|7|70C803-111111,26|-10|84D833-111111,27|-14|89DD36-111111"},
             熔炼 = {478,972,1},
 			关闭熔炼 = {600,262,1}
-        }
+        },
+        使用 = {
+			物品1 = {103,293,1},
+			使用按钮 = {"物品使用",474,465,576,520,"F09408-111111","1|28|F7A12A-111111,29|4|EF8F0C-111111,31|33|FAB556-111111,59|20|FFFFFF-111111"},
+			使用成功 = {"物品使用成功",226,356,489,488,"F8EB83-111111","20|-1|FBF7BB-111111,52|-2|F5E180-111111,0|17|FBF8C8-111111,51|19|FBF8BD-111111"},
+			关闭提示 = {524,848,1}
+		}
     },
     角色 = {
 		图标 = {73,1224,1},
@@ -1672,30 +1678,6 @@ function InitAccounts()
     
 end
 
-function WuPinShiYong()
-    -- 打开背包
-   Ares.TapFormFeature(feature.task.beibao.icon);
-   
-	while true do
-        Ares.Sleep(1);
-        -- 点第一个物品
-        Ares.TapFormFeature(feature.task.beibao.paimai.wupin1_click);
-        
-        -- 验证有没有使用按钮
-		if Ares.FindMultiColorWithTap(feature.task.beibao.shiyong.shiyong_click,true) == true then 
-            if Ares.FindMultiColorWithTap(feature.task.beibao.shiyong.shiyongchenggong) == true then 
-            
-				Ares.TapFormFeature(feature.task.beibao.shiyong.guanbitishi);
-            
-			end
-		else
-			Ares.MessageBox("物品使用完毕")
-			break;
-		end
-        
-    end
-   
-end
 -- 小七手游登录
 function Unit.State.XiaoQiLogin()
     -- 杀死APP 重启
@@ -2378,117 +2360,6 @@ function ShenDianBoss()
         end
     end
 end
-
-
-
--- 神殿BOSS
-function ShenDianBoss2()
-    
-    while true do
-        -- 在游戏首页 点boss按钮
-		if CheckIsGameIndexPage() == true then 
-			Ares2.TapFormFeature(feature.BOSS.图标);
-            Ares2.Sleep(2);
-             -- 切换神殿页签
-			Ares2.TapFormFeature(feature.BOSS.神殿.图标);
-        end 
-        
-            
-		if Ares2.Find.Text(feature.task.boss.神殿.进入场景) or Ares2.Find.Text(feature.task.boss.神殿.进入场景2) then
-			Ares.MessageBox("神殿挑战完成");
-			Ares.TapFormFeature(feature.system.back2);
-			break;
-		end
-            
-        Ares.Sleep(5);
-        
-        local bossAmount = 9;
-        local isError = false;
-        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
-        
-        
-        for _floor=2,1,-1 do
-            if _floor == 2 then
-				Ares2.TapFormFeature(feature.BOSS.神殿.第二层);
-			end
-            if _floor == 2 then
-				Ares2.TapFormFeature(feature.BOSS.神殿.第一层);
-			end
-            
-        end
-		
-		for i=bossAmount,1,-1 do
-            local rows = math.ceil(i/totalRows);
-            local cols = i % totalCols;
-            if cols == 0 then 
-                cols = totalCols;
-			end
-            
-            local bossX = seedX + (cols-1) * 242;
-            local bossY = seedY + (rows-1) * 114;
-            Ares.TapFormFeature({bossX,bossY,1});
-            -- 检测能不能检测
-            local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 130,bossY + 30,"4DCA34",1,0};
-            if Ares.FindColorWithTap(tiaozhanParam,true) == true then
-				Ares.MessageBox("准备挑战BOSS"..i);
-				-- 点击挑战按钮 等CD
-				Ares.TapFormFeature(feature.task.boss.神殿.开始挑战);
-				
-				-- 检测是不是到了挑战界面
-				local retryTimes = 1;
-				while true do
-					if TaskBossCheckIsFighting() == false then
-						Ares.MessageBox("BOSS寻路中");
-						lineprint("Task_Boss_神殿.t",168,"错误次数"..retryTimes)
-						if	retryTimes>= 20 then
-							isError = true;
-							Ares.MessageBox("BOSS寻路异常");
-							break;
-						end
-						retryTimes = retryTimes + 1;
-					else
-						Ares.MessageBox("BOSS挑战中");
-						break;
-					end 
-				end
-				
-				while true do
-					Ares.Sleep(1);
-					if TaskBossCheckIsInShenDianIndex(true) == true then 
-						Ares.MessageBox("BOSS挑战完成");
-						Ares.Sleep(5)
-						break;
-					else 
-						
-						Ares.MessageBox("BOSS挑战中");
-					end 
-				end
-				break
-                
-			else
-                 Ares.MessageBox("BOSS"..i.."不可以挑战");
-			end
-              
-                
-			if isError == true then
-				Ares.MessageBox("BOSS寻路异常");
-				-- 退出神殿
-				Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
-				Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
-				Ares.Sleep(5);
-				break;
-			end                
-            
-        end
-        
-        if isError == true then
-			-- 退出神殿重新来
-            Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
-			Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
-            Ares.Sleep(5);
-        end
-    end
-end
 function ChongWuDuiHuan()
     -- 点开宠物
     Ares.TapFormFeature(feature.task.chongwu.icon)
@@ -3130,6 +3001,38 @@ function PiLiangRongLian()
     
 	-- 关闭背包框
 	Ares2.TapFormFeature(feature.system.back2);
+end
+function WuPinShiYong()
+    -- 打开背包
+	Ares2.TapFormFeature(feature.背包.图标);
+	Ares2.TapFormFeature(feature.背包.背包页);
+   
+	while true do
+        Ares2.Sleep(1);
+
+		if Ares2.Find.MultiColor(feature.背包.拍卖.物品1可用,true) then
+            Ares2.TapFormFeature(feature.背包.拍卖.使用);
+			Ares2.TapFormFeature(feature.背包.拍卖.单个拍卖);
+		else
+            -- 点第一个物品
+			Ares2.TapFormFeature(feature.背包.使用.物品1);
+			
+			-- 验证有没有使用按钮
+			if Ares2.Find.MultiColor(feature.背包.使用.使用按钮,true) then 
+				if Ares2.Find.MultiColor(feature.背包.使用.使用成功) == true then 
+					Ares2.TapFormFeature(feature.背包.使用.关闭提示);
+				end
+			else
+				Ares2.MessageBox("物品使用完毕")
+				Ares2.TapFormFeature(feature.system.back2);
+				break;
+			end
+		end 
+        
+        
+        
+    end
+   
 end
 -- 物品拍卖
 function WuPinPaiMai()
