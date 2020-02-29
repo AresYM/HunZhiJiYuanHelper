@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Project>
+<ProjInfo>
+<EnterFile>hzjy.t</EnterFile>
+<Language>1</Language>
+<Version>2.2.31</Version>
+<ExeIco/>
+<Platform>android</Platform>
+<PackageName>com.ais.hzjy</PackageName>
+<AppName>魂之纪元辅助</AppName>
+</ProjInfo>
+</Project>
