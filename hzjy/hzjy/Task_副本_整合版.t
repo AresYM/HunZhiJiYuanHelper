@@ -23,9 +23,16 @@
 				Ares.TapFormFeature(feature.副本.装备副本.难度);
 				-- 开打
 				Ares.TapFormFeature(feature.副本.装备副本.开始挑战);
-				
+				local retryTimes = 0;
 				-- 检测装备副本是否完成
 				while IsFuBenIndex() == false do
+                    Ares2.Sleep(1);
+                    if retryTimes >= 120 then
+						Ares2.MessageBox("副本挑战超时")
+                        
+                        break;
+					end
+                    retryTimes = retryTimes + 1;
 					Ares2.MessageBox("装备副本挑战中")
 				end
 			end
@@ -51,9 +58,16 @@
 				Ares.TapFormFeature(feature.副本.魂卡副本.难度);
 				-- 开打
 				Ares.TapFormFeature(feature.副本.魂卡副本.开始挑战);
-				
+				local retryTimes = 0;
 				-- 检测装备副本是否完成
 				while IsFuBenIndex() == false do
+                    Ares2.Sleep(1);
+                    if retryTimes >= 120 then
+						Ares2.MessageBox("副本挑战超时")
+                        
+                        break;
+					end
+                    retryTimes = retryTimes + 1;
 					Ares2.MessageBox("魂卡副本挑战中")
 				end
 			end
@@ -106,9 +120,16 @@
 				Ares.TapFormFeature(feature.副本.雷霆岛.开始挑战确定);
 				
 				-- 检测是不是在挑战中
-				
+				local retryTimes = 0;
 				-- 检测装备副本是否完成
 				while IsFuBenIndex() == false do
+                    Ares2.Sleep(1);
+                    if retryTimes >= 120 then
+						Ares2.MessageBox("副本挑战超时")
+                        
+                        break;
+					end
+                    retryTimes = retryTimes + 1;
 					Ares2.MessageBox("雷霆岛副本挑战中")
 				end
 			end
