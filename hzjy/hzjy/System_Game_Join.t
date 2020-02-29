@@ -47,7 +47,7 @@ function Unit.State.SystemGameStart_Old()
     if a1 == true or a2 == true then
         return "SystemGameJoin";
     end
-    
+    Unit.Param.SystemGameJoin.RetryTimes = 0;
     return "HandleTasks";
 	
 end
