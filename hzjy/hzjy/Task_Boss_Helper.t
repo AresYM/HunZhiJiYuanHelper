@@ -38,10 +38,9 @@ end
 function TaskBossCheckIsFighting()
     local x1 = -1 y1 = -1;
     local x2 = -1 y2 = -1;
-    XM.KeepScreen(0)
     x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch1);
     x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch2);
-    if	x1>0 and y1>0 and x2>0 and y2>0 then
+    if	(x1>0 and y1>0) and (x2>0 and y2>0) then
 		return true;
 	else
 		return false;

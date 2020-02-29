@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+1998068719980687")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+2633990626339906")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -38,7 +38,7 @@ function Unit.State.Test()
     -- Unit.State.XiaoQiLogin()
     -- InitXiaoQiLogin();
     
-    CloseAllDialogAndBackToIndex();
+    Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿);
     
     return "Test";
 end
@@ -275,7 +275,17 @@ feature_leidian ={
 			BOSS2 = {"BOSS2",428,554,622,634,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
 			BOSS3 = {"BOSS3",108,1018,302,1098,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
 			BOSS4 = {"BOSS4",418,1016,630,1094,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"}
-
+        },
+        神殿 = {
+			图标 = {306,1226,1,true},
+            退出 = {676,202,1},
+			退出确认 = {464,750,1},
+            第一层 = {74,292,1},
+            第二层 = {222,296,1},
+            开始挑战 = {611,1030,1},
+			黑暗神殿 = {"黑暗神殿",13,584,41,619,"EDCE00-111111","7|0|FFDE00-111111,14|0|FFDE00-111111,7|5|FFDE00-111111,7|13|FFDE00-111111"},
+            采集 = {"采集",298,696,364,750,"EE8F0B-111111","1|23|F69F27-111111,16|1|EF8F0C-111111,15|26|F7A22E-111111,35|14|FFFFFF-111111"},
+			可挑战 = {"可挑战" ,582,1015,642,1049,"FFFFFF-111111","0|7|FFFFFF-111111,0|18|FFFFFF-111111,23|9|FFFFFF-111111,23|15|FFFFFF-111111,23|18|FFFFFF-111111"}
         }
     },
     水晶遗迹 = {
@@ -422,35 +432,6 @@ feature_leidian ={
 		vip_boss = {479,716,658,958,"前往-VIP Boss","845226-222222",0.9}
     },
     task = {
-		 
-		-- 角色
-        juese = {
-			icon = {73,1224,1},
-            juese1 = {128,209,1},
-            juese2 = {241,214,1},
-            juese3 = {359,216,1},
-            juese4 = {478,212,1},
-            juese5 = {597,217,1},
-            jiadian = {
-				icon = {80,1224,1,true},
-                jiadian = {252,842,1},
-                tuijian = {330,1066,1},
-                baocun = {160,1066,1},
-				kejiadian = {"可加点",66,154,650,258,"EC5939-000000","9|-1|DC472A-000000,4|7|C71F05-000000,6|0|DF4B2E-000000"}
-            },
-            xinxi = {
-				icon = {114,832,1},
-                yijianzhuangbei = {352,758,1}
-            } },
-        -- 好友
-        haoyou = {
-			icon = {44,1148,1},
-            youjian = {
-				icon = {582,974,1},
-                yijianlingqu = {454,886,1},
-                shanchuyidu = {264,892,1}
-            }
-        },
         -- BOSS
         boss = {
 			icon = {676,470,1},
@@ -463,8 +444,8 @@ feature_leidian ={
 				可以挑战颜色 = "4DCA34|4DCA34|4DCA34|4DCA34",
                 开始挑战 = {611,1030,1},
                 神殿完成 = {"神殿完成",203,1001,260,1033,"14BB03-000000","0|7|AF8E68-000000,-4|7|19E504-000000",0.9,0},
-				进入场景 = {532,999,694,1057,"进入场景","fef5e9-555555",0.9},
-                进入场景2 = {532,999,694,1057,"进入场景2","fef5e9-555555",0.9}
+				进入场景 = {532,999,694,1057,"进入场景","fef5e9-555555",0.8},
+                进入场景2 = {532,999,694,1057,"进入场景2","fef5e9-555555",0.8}
             },
             shendian = {
 				icon = {306,1226,1},
@@ -563,18 +544,7 @@ feature_leidian ={
                 
             }
         },
-		-- 锻造
-        duanzao = {
-			icon = {454,1232,1},
-            qianghua = {
-				icon = {76,1240,1},
-                keyiqianghua = {"可以强化",306,874,413,988,"68FF33",1,0},
-				qianghuajinhua = {"强化进化",270,782,454,862,"F19618-000000","30|0|FCECD5-000000,60|-4|F09516-000000,110|-6|EF9212-000000",0.9,0},
-                kaishiqianghua = {372,1054,1},
-                wuqianghuashi = {"无强化石",373,944,389,968,"F90100|F70502|F00300",0.9,0},
-                dengjibuzu = {"等级不足",282,1026,453,1092,"6984D5-000000","-1|20|759CE1-000000,10|30|7BA9E7-000000",0.9,0}
-            }
-        },
+		 
 		-- 背包
         beibao = {
 			icon = {561,1238,1},
@@ -602,61 +572,7 @@ feature_leidian ={
 				juese5 = {"升级角色5",486,1000,654,1080,"6B8BD7-000000","-6|26|7DAEE9-000000,22|12|739BDF-000000,92|10|7298DE-000000",0.9,0},
             }
         },
-        -- 副本
-        fuben = {
-			icon = {674,556,1},
-            pitch1 = {"副本定位1",104,137,197,176,"64412E-000000","23|0|684633-000000,43|5|64412E-000000,52|19|64412E-000000,386|-138|100C09-000000"},
-            pitch2 = {"副本定位2",648,149,696,203,"EA8773-000000","-13|15|B75657-000000,16|15|B75657-000000,2|13|F0DEBC-000000,-166|-155|100C09-000000"},
-
-			zhuangbei = {
-				icon = {102,1098,1},
-                easyStep1 = {164,318,1},
-                easyStep2 = {608,404,1},
-                complete_all = {"装备副本完成",473,394,662,489,"F09210-000000","-3|22|F7A32E-000000,-1|58|514542-000000,128|9|F3981C-000000,8|-416|100C09-000000"},
-                success_current = {"装备副本成功",642,146,704,208,"F8987C-000000","-15|18|B75657-000000,1|18|E7C7A6-000000,16|16|B9595A-000000",0.9,0},
-                tiaozhan = {494,952,1}
-            },
-            hunka = {
-				icon = {246,1094,1},
-                tiaozhan = {496,956,1},
-                easyStep1 = {164,318,1},
-                easyStep2 = {313,252,1},
-                weikaiqi = {"关卡未开启",410,918,580,988,"9D9D9D-000000","-20|30|AAAAAA-000000,82|4|A0A0A0-000000,92|30|AAAAAA-000000,52|-928|100C09-000000"},
-                complete_all = {"完成魂卡副本",476,405,662,464,"EF8F0D-000000","11|20|F69E25-000000,61|-3|EE8D09-000000,114|18|F59D23-000000",0.9,0},
-                hunkamenpiao = {"魂卡门票",168,708,350,796,"EE8F0D-000000","-2|28|F6A12A-000000,50|12|F29719-000000,104|16|F3981D-000000",0.9,0},
-                hunkamenpiao_click = {486,740,1}
-            },
-            jingyan = {
-				icon = {374,1098,2,true},
-                tiaozhan = {354,990,1},
-                quedingtiaozhan = {464,746,1},
-				tiaozhanzhong={"经验副本挑战中",13,960,45,1004,"FEFF92-000000","-8|6|FFF27F-000000,1|12|FFFDC4-000000,4|27|FA8F11-000000,-10|25|FCA61F-000000"},                
-                cd = {"经验副本CD",266,956,452,1026,"9C9C9C-000000","54|-4|9B9B9B-000000,108|2|9C9C9C-000000,126|34|AAAAAA-000000,208|-964|100C09-000000"},
-                complete_all = {"经验副本完成",560,981,576,1001,"97623D-000000","3|-12|9B6942-000000,3|-6|CBB189-000000",0.9,0},
-                success_current = {"经验副本成功",138,752,316,828,"84A170-000000","-2|24|9CBD86-000000,24|36|A9CC94-000000,58|22|DCE7D4-000000"},
-				success_click = {486,794,1},
-                cishubuzu = {"次数不足",569,451,641,512,"DC3E04-000000","-2|29|CE2E01-000000,18|15|FFDA80-000000,33|34|CB2B01-000000",0.9,0}
-            },
-            leitingdao = {
-				icon = {510,1084,1},
-                tiaozhan = {522,988,1},
-                tiaozhan_icon = {"挑战按钮",428,952,618,1026,"ED8E0A-000000","-12|12|F09415-000000,2|28|F59E25-000000,90|8|EF9211-000000",0.9,0},
-                zhijiejin = {464,750,1},
-                success_current ={"雷霆岛成功",198,348,510,454,"F8E973-000000","44|0|FAEB74-000000,100|8|C1602F-000000,160|16|811401-000000,62|34|CE7938-000000"},
-                success_click={350,986,1}
-            }
-        },
-        huoyue = {
-			icon = {679,379,1},
-            bukelingqu = {"前往按钮",522,352,672,416,"749BE0-000000","12|-1|7399DF-000000,28|0|B5CAEF-000000,47|0|FEFFFF-000000",0.9,0},
-            yiwancheng = {"可领取活跃",34,318,117,401,"DA4343-000000","17|-7|FBDC74-000000,35|-1|DC4343-000000",0.9,0},
-			lingqu = {594,388,1},
-            jiangli1 = {156,935,1},
-            jiangli2 = {259,933,1},
-            jiangli3 = {358,936,1},
-            jiangli4 = {483,930,1},
-            jiangli5 = {643,936,1},
-        },
+         
         gonghui = {
 			icon = {456,1006,1},
             huodong = {
@@ -2228,112 +2144,13 @@ end
 function TaskBossCheckIsFighting()
     local x1 = -1 y1 = -1;
     local x2 = -1 y2 = -1;
-    XM.KeepScreen(0)
     x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch1);
     x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch2);
-    if	x1>0 and y1>0 and x2>0 and y2>0 then
+    if	(x1>0 and y1>0) and (x2>0 and y2>0) then
 		return true;
 	else
 		return false;
 	end
-end
--- 神殿BOSS
-function ShenDianBoss()
-    
-    while true do
-        -- 在游戏首页 点boss按钮
-		if CheckIsGameIndexPage() == true then 
-			Ares.TapFormFeature(feature.task.boss.icon);
-            Ares2.Sleep(2);
-             -- 切换神殿页签
-			Ares.TapFormFeature(feature.task.boss.神殿.Tab图标);
-        end 
-        
-        
-        if Ares2.Find.Text(feature.task.boss.神殿.进入场景) or Ares2.Find.Text(feature.task.boss.神殿.进入场景2) then
-			Ares.MessageBox("神殿挑战完成");
-            Ares.TapFormFeature(feature.system.back2);
-			break;
-		end
-            
-            
-        Ares.Sleep(5);
-        
-        local bossAmount = 9;
-        local isError = false;
-        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
-		
-		for i=bossAmount,1,-1 do
-            local rows = math.ceil(i/totalRows);
-            local cols = i % totalCols;
-            if cols == 0 then 
-                cols = totalCols;
-			end
-            lineprint("Task_Boss_ShenDian.t",33,i..":第"..rows.."行"..cols.."列")
-            local bossX = seedX + (cols-1) * 242;
-            local bossY = seedY + (rows-1) * 114;
-            Ares.TapFormFeature({bossX,bossY,1});
-            -- 检测能不能检测
-            local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 130,bossY + 30,"4DCA34",1,0};
-            if Ares.FindColorWithTap(tiaozhanParam,true) == true then
-				Ares.MessageBox("准备挑战BOSS"..i);
-				-- 点击挑战按钮 等CD
-				Ares.TapFormFeature(feature.task.boss.神殿.开始挑战);
-				
-				-- 检测是不是到了挑战界面
-				local retryTimes = 1;
-				while true do
-					if TaskBossCheckIsFighting() == false then
-						Ares.MessageBox("BOSS寻路中");
-						lineprint("Task_Boss_ShenDian.t",49,"错误次数"..retryTimes)
-						if	retryTimes>= 20 then
-							isError = true;
-							Ares.MessageBox("BOSS寻路异常");
-							break;
-						end
-						retryTimes = retryTimes + 1;
-					else
-						Ares.MessageBox("BOSS挑战中");
-						break;
-					end 
-				end
-				
-				while true do
-					Ares.Sleep(1);
-					if TaskBossCheckIsInShenDianIndex(true) == true then 
-						Ares.MessageBox("BOSS挑战完成");
-						Ares.Sleep(5)
-						break;
-					else 
-						
-						Ares.MessageBox("BOSS挑战中");
-					end 
-				end
-				break
-                
-			else
-                 Ares.MessageBox("BOSS"..i.."不可以挑战");
-			end
-              
-                
-			if isError == true then
-				Ares.MessageBox("BOSS寻路异常");
-				-- 退出神殿
-				Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
-				Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
-				Ares.Sleep(5);
-				break;
-			end                
-            
-        end
-        
-        if isError == true then
-			-- 退出神殿重新来
-            Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
-			Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
-            Ares.Sleep(5);
-        end
-    end
 end
 function VipBoss()
     local index = 1;
@@ -2453,6 +2270,223 @@ function ZhongLiBoss()
         if checkgetselected("task_zhongliboss_once") == true then 
             break;
 		end 
+    end
+end
+-- 神殿BOSS
+function ShenDianBoss()
+    
+    while true do
+        
+        Ares.Sleep(10);
+        -- 在游戏首页 点boss按钮
+		if CheckIsGameIndexPage() == true then 
+			Ares2.TapFormFeature(feature.BOSS.图标);
+            Ares2.Sleep(2);
+             -- 切换神殿页签
+			Ares2.TapFormFeature(feature.BOSS.神殿.图标);
+            Ares2.Sleep(2);
+        end 
+        
+            
+		if Ares2.Find.MultiColor(feature.BOSS.神殿.可挑战) == false then
+			Ares2.TapFormFeature(feature.system.back2);
+            Ares2.Sleep(1);
+			Ares2.MessageBox("神殿挑战完成");
+			break;
+		end
+            
+        Ares.Sleep(5);
+        
+        local bossAmount = 9;
+        local isError = false;
+        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
+        local isFinish = false;
+        
+        for _floor=2,1,-1 do
+            if _floor == 2 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第二层);
+                Ares2.MessageBox("第二层BOSS");
+			end
+            if _floor == 1 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第一层);
+                Ares2.MessageBox("第一层BOSS");
+			end
+            for i=bossAmount,1,-1 do
+				local rows = math.ceil(i/totalRows);
+				local cols = i % totalCols;
+				if cols == 0 then 
+					cols = totalCols;
+				end
+				
+				local bossX = seedX + (cols-1) * 242;
+				local bossY = seedY + (rows-1) * 114;
+				Ares2.TapFormFeature({bossX,bossY,1});
+				-- 检测能不能检测
+				local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 65,bossY + 30,"4DCA34",1,0};
+				if Ares2.Find.SingleColor(tiaozhanParam,true) == true then
+					Ares.MessageBox("准备挑战BOSS"..i);
+					-- 点击挑战按钮
+					Ares2.TapFormFeature(feature.BOSS.神殿.开始挑战);
+                    local retryTimes = 1;
+                    -- 检测是不是在寻路中
+                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == true do
+						if retryTimes > 20 then
+                            Ares2.MessageBox("寻路异常");
+                            isError = true;
+                            break;
+						end 
+                        
+                        if Ares2.Find.MultiColor(feature.BOSS.神殿.采集,true) then
+							-- 等待采集
+                            Ares2.Sleep(10 * 6);
+                            isError = true;
+                            break;
+						end
+                        Ares2.Sleep(1);
+                        retryTimes = retryTimes + 1;
+                    end
+                    
+                    -- 检测是不是挑战中
+                    
+                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == false do
+                        Ares2.MessageBox("BOSS挑战中");
+                        Ares2.Sleep(1);
+                    end
+                    
+                    if	isError then
+						break;
+                    end
+                    
+                    Ares2.Sleep(10);
+                    Ares2.TapFormFeature(feature.BOSS.神殿.退出);
+					Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
+                    isFinish = true;
+                    break;
+				else
+					Ares2.MessageBox("BOSS"..i.."不可以挑战");
+				end
+			end  
+			if isError then
+                Ares2.TapFormFeature(feature.BOSS.神殿.退出);
+				Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
+                Ares2.Sleep(5);
+				break;
+			end 
+            if isFinish  then
+                break;
+            end
+        end
+    end
+end
+
+
+
+-- 神殿BOSS
+function ShenDianBoss2()
+    
+    while true do
+        -- 在游戏首页 点boss按钮
+		if CheckIsGameIndexPage() == true then 
+			Ares2.TapFormFeature(feature.BOSS.图标);
+            Ares2.Sleep(2);
+             -- 切换神殿页签
+			Ares2.TapFormFeature(feature.BOSS.神殿.图标);
+        end 
+        
+            
+		if Ares2.Find.Text(feature.task.boss.神殿.进入场景) or Ares2.Find.Text(feature.task.boss.神殿.进入场景2) then
+			Ares.MessageBox("神殿挑战完成");
+			Ares.TapFormFeature(feature.system.back2);
+			break;
+		end
+            
+        Ares.Sleep(5);
+        
+        local bossAmount = 9;
+        local isError = false;
+        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
+        
+        
+        for _floor=2,1,-1 do
+            if _floor == 2 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第二层);
+			end
+            if _floor == 2 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第一层);
+			end
+            
+        end
+		
+		for i=bossAmount,1,-1 do
+            local rows = math.ceil(i/totalRows);
+            local cols = i % totalCols;
+            if cols == 0 then 
+                cols = totalCols;
+			end
+            
+            local bossX = seedX + (cols-1) * 242;
+            local bossY = seedY + (rows-1) * 114;
+            Ares.TapFormFeature({bossX,bossY,1});
+            -- 检测能不能检测
+            local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 130,bossY + 30,"4DCA34",1,0};
+            if Ares.FindColorWithTap(tiaozhanParam,true) == true then
+				Ares.MessageBox("准备挑战BOSS"..i);
+				-- 点击挑战按钮 等CD
+				Ares.TapFormFeature(feature.task.boss.神殿.开始挑战);
+				
+				-- 检测是不是到了挑战界面
+				local retryTimes = 1;
+				while true do
+					if TaskBossCheckIsFighting() == false then
+						Ares.MessageBox("BOSS寻路中");
+						lineprint("Task_Boss_神殿.t",168,"错误次数"..retryTimes)
+						if	retryTimes>= 20 then
+							isError = true;
+							Ares.MessageBox("BOSS寻路异常");
+							break;
+						end
+						retryTimes = retryTimes + 1;
+					else
+						Ares.MessageBox("BOSS挑战中");
+						break;
+					end 
+				end
+				
+				while true do
+					Ares.Sleep(1);
+					if TaskBossCheckIsInShenDianIndex(true) == true then 
+						Ares.MessageBox("BOSS挑战完成");
+						Ares.Sleep(5)
+						break;
+					else 
+						
+						Ares.MessageBox("BOSS挑战中");
+					end 
+				end
+				break
+                
+			else
+                 Ares.MessageBox("BOSS"..i.."不可以挑战");
+			end
+              
+                
+			if isError == true then
+				Ares.MessageBox("BOSS寻路异常");
+				-- 退出神殿
+				Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
+				Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
+				Ares.Sleep(5);
+				break;
+			end                
+            
+        end
+        
+        if isError == true then
+			-- 退出神殿重新来
+            Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
+			Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
+            Ares.Sleep(5);
+        end
     end
 end
 function ChongWuDuiHuan()

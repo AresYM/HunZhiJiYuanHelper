@@ -36,7 +36,7 @@ function Unit.State.Test()
     -- Unit.State.XiaoQiLogin()
     -- InitXiaoQiLogin();
     
-    CloseAllDialogAndBackToIndex();
+    Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿);
     
     return "Test";
 end
