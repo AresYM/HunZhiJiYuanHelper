@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+12969061296906")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+1348935913489359")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -303,6 +303,7 @@ feature_leidian ={
     },
     背包 = {
 		图标 = {561,1238,1},
+        背包页 = {79,1229,1},
         拍卖 = {
 			物品4可用 = {"物品4可用",436,234,522,259,"D14343-000000","12|0|D24343-000000,19|0|D54343-000000,32|0|D84343-000000"},
             物品4过期 = {"物品4过期",450,236,534,315,"686868-000000","7|7|6A6A6A-000000,16|14|909090-000000,27|25|6D6D6D-000000"},
@@ -316,6 +317,12 @@ feature_leidian ={
             物品1过期 = {"物品1过期",74,242,161,271,"676767-000000","12|-1|676767-000000,27|2|696969-000000,41|9|696969-000000"},
             单个自己使用 = {251,815,1},
             单个拍卖 = {467,806,1}
+        },
+        批量熔炼 = {
+			图标 = {147,1076,1},
+            是否有装备 = {"有可熔炼装备",96,345,177,415,"67BC12-111111","8|7|70C803-111111,26|-10|84D833-111111,27|-14|89DD36-111111"},
+            熔炼 = {478,972,1},
+			关闭熔炼 = {600,262,1}
         }
     },
     角色 = {
@@ -331,6 +338,18 @@ feature_leidian ={
             推荐 = {330,1066,1},
             保存 = {160,1066,1}
 		}
+    },
+    锻造 = {
+		图标 = {454,1232,1},
+        强化 = {
+			图标 = {76,1240,1},
+            可以强化 = {"可以强化",306,874,413,988,"68FF33",1,0},
+			突破 = {"强化进化",270,782,454,862,"F19618-111111","30|0|FCECD5-111111,60|-4|F09516-111111,110|-6|EF9212-111111",0.9,0},
+			开始强化 = {372,1054,1},
+			无强化石 = {"无强化石",373,944,389,968,"F90100|F70502|F00300",0.9,0},
+			等级不足 = {"等级不足",282,1026,453,1092,"6984D5-111111","-1|20|759CE1-111111,10|30|7BA9E7-111111",0.9,0}
+
+        }
     },
 	login = {
 		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
@@ -548,20 +567,7 @@ feature_leidian ={
 				piliangronglian = {140,1070,1},
                 ronglian_guanbi = {466,964,1}
             },
-            paimai = {
-                wupin1 = {"物品1",80,239,147,261,"D14343-000000","7|0|D24343-000000,17|0|D54343-000000,26|0|D74343-000000",0.9,0},
-                wupin4 = {"物品4",436,234,522,259,"D14343-000000","12|0|D24343-000000,19|0|D54343-000000,32|0|D84343-000000",0.9,0},
-                wupin4_outtime = {"物品4_过期",450,236,534,315,"686868-000000","7|7|6A6A6A-000000,16|14|909090-000000,27|25|6D6D6D-000000"},
-                wupin1_click = {120,304,1},
-                wupin4_click = {603,293,1},
-                wupin_shiyong = {584,315,1},
-                dange_naqupaimai = {466,810,1},
-                piliang_naqupaimai = {624,892,1},
-                piliang_zijishiyong = {460,894,1},
-                piliang_guoqi = {"批量拍卖已过期",560,860,696,924,"9F9F9F-000000","0|28|ACACAC-000000,28|28|AFAFAF-000000,106|4|9E9E9E-000000",0.9,0},
-                piliang_weiwancheng = {"批量拍卖还未完成",488,385,602,499,"D54343-000000","11|-1|DD4343-000000,30|15|FAE079-000000,46|34|DC4343-000000",0.9,0},
-				paimai_guanbi = {644,336,1}
-            },
+             
             shiyong = {
 				shiyong_click = {"物品使用",474,465,576,520,"F09408-000000","1|28|F7A12A-000000,29|4|EF8F0C-000000,31|33|FAB556-000000,59|20|FFFFFF-000000"},
 				shiyongchenggong = {"物品使用成功",226,356,489,488,"F8EB83-000000","20|-1|FBF7BB-000000,52|-2|F5E180-000000,0|17|FBF8C8-000000,51|19|FBF8BD-000000"},
@@ -2473,37 +2479,6 @@ function ChongWuDuiHuan()
         
     end
 end
-
--- 强化装备
-function ZhuangBeiQiangHua()
-    lineprint("Task_DuanZao_ZhuangBeiQiangHua.t",4,"强化")
-    -- 点开锻造
-    Ares.TapFormFeature(feature.task.duanzao.icon);
-    -- 点开强化tab页
-    Ares.TapFormFeature(feature.task.duanzao.qianghua.icon);
-	while true do
-        -- 验证有没有养成礼包
-        MyFindMultiColor(feature.yangchenglibao.icon,true);
-        
-        -- 验证能不能强化
-        -- 1.没有强化石了
-        if MyFindColor(feature.task.duanzao.qianghua.wuqianghuashi) == true then
-            Ares.MessageBox("没有强化石了");
-            break;
-        end
-        -- 2.等级不够了
-        if MyFindMultiColor(feature.task.duanzao.qianghua.dengjibuzu) == false then
-            Ares.MessageBox("强化等级不足");
-            break;
-		end
-        
-		-- 进行强化
-		Ares.TapFormFeature(feature.task.duanzao.qianghua.kaishiqianghua);
-        
-        -- 验证有没有进化按钮
-        MyFindMultiColor(feature.task.duanzao.qianghua.qianghuajinhua,true);
-    end 
-end
 function LingQuHuoYue()
     -- 点击领取活跃按钮
 	Ares.TapFormFeature(feature.task.huoyue.icon);
@@ -3059,18 +3034,34 @@ end
 -- 批量熔炼
 function PiLiangRongLian()
     -- 点击背包按钮
-    Ares.TapFormFeature(feature.task.beibao.icon);
+    Ares2.TapFormFeature(feature.背包.图标);
+
+    Ares2.TapFormFeature(feature.背包.背包页);
+    
     -- 点击批量熔炼按钮
-    Ares.TapFormFeature(feature.task.beibao.ronglian.piliangronglian)
-    -- 点击熔炼按钮
-    Ares.TapFormFeature(feature.task.beibao.ronglian.ronglian_guanbi)
+    Ares2.TapFormFeature(feature.背包.批量熔炼.图标)
+    
+    
+	if Ares2.Find.MultiColor(feature.背包.批量熔炼.是否有装备) then
+        -- 点击熔炼按钮
+		Ares2.TapFormFeature(feature.背包.批量熔炼.熔炼)
+	end
+    
+    
     -- 点击关闭按钮
-    Ares.TapFormFeature(feature.task.beibao.ronglian.ronglian_guanbi)
+    Ares2.TapFormFeature(feature.背包.批量熔炼.关闭熔炼)
+    
+    
+	-- 关闭背包框
+	Ares2.TapFormFeature(feature.system.back2);
 end
 -- 物品拍卖
 function WuPinPaiMai()
 	-- 打开背包
 	Ares2.TapFormFeature(feature.背包.图标);
+    
+
+    Ares2.TapFormFeature(feature.背包.背包页);
    
 	-- 验证第4个物品是不是拍品
     
@@ -3178,4 +3169,50 @@ function JueSeJiaDian()
 		
     Ares2.MessageBox("角色加点操作完毕",2);
     
+end
+-- 强化装备
+function ZhuangBeiQiangHua()
+    -- 点开锻造
+    Ares2.TapFormFeature(feature.锻造.图标);
+    -- 点开强化tab页
+    Ares2.TapFormFeature(feature.锻造.强化.图标);
+    
+	local retryTimes = 0;
+    
+	while true do
+        
+		if retryTimes > 20 then
+            Ares2.MessageBox("强化次数超过上限，停止强化");
+            break;
+		end
+        
+        -- 验证有没有养成礼包
+        if Ares2.Find.MultiColor(feature.yangchenglibao.icon,true) then
+            Ares2.Sleep(2);
+		end;
+        
+        -- 验证能不能强化
+        -- 1.没有强化石了
+        if Ares2.Find.SingleColor(feature.锻造.强化.无强化石) then
+            Ares2.MessageBox("没有强化石了");
+            break;
+        end
+        -- 2.等级不够了
+        if Ares2.Find.MultiColor(feature.锻造.强化.等级不足) == false then
+            Ares2.MessageBox("强化等级不足");
+            break;
+		end
+        
+		-- 进行强化
+		Ares2.TapFormFeature(feature.锻造.强化.开始强化);
+        
+        -- 验证有没有进化按钮
+        Ares2.Find.MultiColor(feature.锻造.强化.突破,true);
+        
+        retryTimes = retryTimes + 1;
+    end 
+    
+    
+	-- 关闭强化
+	Ares2.TapFormFeature(feature.system.back2);
 end

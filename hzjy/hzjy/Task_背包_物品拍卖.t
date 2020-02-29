@@ -2,6 +2,9 @@
 function WuPinPaiMai()
 	-- 打开背包
 	Ares2.TapFormFeature(feature.背包.图标);
+    
+
+    Ares2.TapFormFeature(feature.背包.背包页);
    
 	-- 验证第4个物品是不是拍品
     
