@@ -91,24 +91,7 @@ function Unit.State.HandleTasks()
 	elseif currentTaskName == "装备副本" or currentTaskName == "经验副本" or currentTaskName == "魂卡副本" or currentTaskName == "雷霆岛" then
 		FuBenZhengHeBan();
 		return "HandleTasks"   
-        
-	elseif 	currentTaskName == "副本整合版" then
-        FuBenZhengHeBan();
-        return "HandleTasks" 
-        
---    elseif 	currentTaskName == "装备副本" then
---        ZhuangBeiFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "经验副本" then
---        JingYanFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "魂卡副本" then
---        HunKaFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "雷霆岛" then
---        LeiTingDaoFuBen();
---        return "HandleTasks"
-        
+    
     elseif 	currentTaskName == "工会护送" then
         GongHuiHuSong();
         return "HandleTasks" 
@@ -204,37 +187,31 @@ end
 function InitTasks()
     Global.TaskList = {};
     local tasks = {
+		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_renwushengji",value = "人物升级"},
 		{id = "task_juesejiadian",value = "角色加点"},
 		{id = "task_shuijingyiji",value = "水晶遗迹"},
 		{id = "task_zhuangbeiqianghua",value = "装备强化"},
-		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_yezhan",value = "野战"},
 		{id = "task_jingji",value = "竞技"},
 		{id = "task_vipboss",value = "VIPBOSS"},
 		{id = "task_shendianboss",value = "神殿BOSS"},
-		{id = "task_shouquyoujian",value = "收取邮件"},
-		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_zhongliboss",value = "中立BOSS"},
-		{id = "task_shouquyoujian",value = "收取邮件"},
-		{id = "task_wupinpaimai",value = "物品拍卖"},
-		{id = "task_fubenzhengheban",value = "副本整合版"},
 		{id = "task_zhuangbeifuben",value = "装备副本"},
 		{id = "task_jingyanfuben",value = "经验副本"},
 		{id = "task_hunkafuben",value = "魂卡副本"},
 		{id = "task_leitingdao",value = "雷霆岛"},
 		{id = "task_renwushengji",value = "人物升级"},
-		{id = "task_juesejiadian",value = "角色加点"},
 		{id = "task_chongwuduihuan",value = "宠物兑换"},
 		{id = "task_gonghuihusong",value = "工会护送"},
 		{id = "task_lingquhuoyue",value = "领取活跃"},
 		{id = "task_qiandaolingjiang",value = "签到领奖"},
+		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_wupinshiyong",value = "物品使用"},
-		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shilianta",value = "试炼塔"},
 		{id = "task_kuafuhanhua",value = "跨服喊话"},
 		{id = "task_qiehuanzhanghao",value = "切换账号"}

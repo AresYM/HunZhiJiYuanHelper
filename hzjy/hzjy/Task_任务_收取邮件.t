@@ -29,5 +29,6 @@ function ShouQuYouJian()
     
     Ares2.MessageBox("邮件处理完毕")
     
+    ChangeTaskStatus(2);
 end
 

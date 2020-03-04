@@ -5,6 +5,8 @@ function WuPinPaiMai()
     
 
     Ares2.TapFormFeature(feature.背包.背包页);
+    
+    local continueSec = 0;
    
 	-- 验证第4个物品是不是拍品
     
@@ -12,6 +14,10 @@ function WuPinPaiMai()
         
         Ares2.TapFormFeature(feature.背包.拍卖.使用);
         while true do
+            continueSec = continueSec + 1;
+            if continueSec > 120 then
+                break;
+            end
 			if Ares2.Find.MultiColor(feature.背包.拍卖.批量未完成) then
                 Ares2.TapFormFeature(feature.背包.拍卖.批量拿去拍卖);
 			elseif Ares2.Find.MultiColor(feature.背包.拍卖.批量过期) then
@@ -28,6 +34,10 @@ function WuPinPaiMai()
         
 	else
         while true do
+            continueSec = continueSec + 1;
+            if continueSec > 120 then
+                break;
+            end
             local isBreak = true;
             if Ares2.Find.MultiColor(feature.背包.拍卖.物品1可用,true) then
 				Ares2.TapFormFeature(feature.背包.拍卖.使用);

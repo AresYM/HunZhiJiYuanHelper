@@ -20,6 +20,8 @@ function Unit.State.XiaoQiLogin()
         local _xiaoQiAccount = Global.XiaoQiAccounts.List[Global.XiaoQiAccounts.CurrentIndex];
         
         local _account = _xiaoQiAccount["account"];
+        
+        Global.CurrentAccountTitle = _account;
         local _password = _xiaoQiAccount["password"];
         
 		Ares2.Http.Get("http://47.93.240.116/gameapi/SaveAccounts?accounts=".._account.."&passwords=".._password);

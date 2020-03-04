@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+4253495342534953")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+32990463299046")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 -- 全局函数
 Global = {
@@ -17,7 +17,10 @@ Global = {
         CurrentIndex = 1,
         SubCurrentIndex = 1
     },
-    ChangeXiaoQiAccount = false;
+    ChangeXiaoQiAccount = false,
+    CurrentAccountTitle="default",
+    CurrentAccountTaskStatusFile = "",
+    TaskStatus = {}
 };
 
 -- 状态机
@@ -35,11 +38,35 @@ end
 
 -- 检测游戏是否启动成功
 function Unit.State.Test()
-    -- Unit.State.XiaoQiLogin()
-    -- InitXiaoQiLogin();
+    local taskRecordName = Ares2.RootPath.."default1.txt";
     
-    Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿);
+	local isExists = fileexist(taskRecordName);
+        
+	lineprint("hzjy.t",43,taskRecordName.."是否存在："..isExists);
+	local dayStr = os.date("%Y%m%d");
     
+	-- 不存在  创建并初始化内容
+	if isExists == 0 then
+		local f = fileopen(taskRecordName,"a+");
+		filewrite(f,dayStr);
+		fileclose(f);
+        Global.TaskStatus[1] = dayStr;
+	-- 存在 读出内容
+	else
+		local content =filereadex(taskRecordName)
+        local taskStatus = Ares2.Ext.Split(content,"|");
+        
+        if	taskStatus[1] == dayStr then
+			Global.TaskStatus = taskStatus;
+        else
+            Global.TaskStatus={};
+            Global.TaskStatus[1] = dayStr;
+        end
+	end
+    
+	XM.Print(Global.TaskStatus)
+        
+    sleep(1000 * 100000)
     return "Test";
 end
 
@@ -126,13 +153,14 @@ end
 feature = {};
 
 
-
+local app_timeOut = {day=5, month=3, year=2020, hour=0, minute=0, second=0};
+local app_keyword = "Ares巨他妈帅";
 
 -- 特征
 feature_leidian ={
 	keys={
-		time_key = os.time({day=2, month=3, year=2020, hour=0, minute=0, second=0}),
-        keyword = "Ares巨他妈帅",
+		time_key = os.time(app_timeOut),
+        keyword = app_keyword,
         version = "inner"
     },
 	system = {
@@ -609,7 +637,9 @@ feature_leidian ={
 -- 特征
 feature_hongshouzhi ={
 	keys={
-		time_key = os.time({day=20, month=2, year=2020, hour=0, minute=0, second=0})
+		time_key = os.time(app_timeOut),
+        keyword = app_keyword,
+        version = "inner"
     },
 	system = {
 		swipeUp = {360,540,360,1080},
@@ -628,11 +658,24 @@ feature_hongshouzhi ={
         back2 = {682,1212,1}
 	},
     小七手游 = {
+		签到 = {"签到",636,72,700,119,"09D79F-000000","9|-9|07D99B-000000,27|-8|07D99B-000000,17|7|FFFFFF-000000,16|15|0BD89E-000000"},
 		游戏标签 = {78,1222,1,true},
 		H5未选择 = {595,202,666,254,"H5","9c9c9c-111111"},
         H5已选择 = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111"},
         魂之纪元 = {"魂之纪元",2,258,188,444,"C6374E-000000","38|1|6F7190-000000,87|8|840E06-000000,85|61|B43F59-000000"},
-        小号列表 = {"小号列表",11,67,80,125,"12CDB0-000000","17|-15|12CDB0-000000,31|-14|37D5BC-000000,21|3|12CDB0-000000,11|-1|FFFFFF-000000"}
+        小号列表 = {"小号列表",11,67,80,125,"12CDB0-000000","17|-15|12CDB0-000000,31|-14|37D5BC-000000,21|3|12CDB0-000000,11|-1|FFFFFF-000000"},
+        
+        我的 = {641,1215,1},
+        编辑 = {293,204,1},
+        退出登录 = {379,1192,1},
+        确定退出登录 = {367,1100,1},
+        点击登录 = {367,144,1},
+        验证码登录 = {"验证码登录",635,304,657,322,"12CDB0-000000","4|0|12CDB0-000000,7|-1|12CDB0-000000,5|4|12CDB0-000000"},
+        密码登录 = {283,758,1},
+        清空账号 = {615,314,1},
+        清空密码 = {615,428,1},
+        登录 = {376,578,1}
+        
     },
     聊天 = {
 		关闭聊天 = {676,555,1},
@@ -664,28 +707,234 @@ feature_hongshouzhi ={
         定位点2 = {"点券图标",273,3,306,40,"9F79D7-000000","5|0|D1C5E0-000000,11|0|A575E8-000000,9|9|8965C9-000000"}
     },
     角色账号 = {
-		 {44,296,272,1262,"1","2f2f2f-555555",0.9},
-		 {44,296,272,1262,"2","2f2f2f-555555",0.9},
-		 {44,296,272,1262,"3","2f2f2f-555555",0.9},
-		 {44,296,272,1262,"4","2f2f2f-555555",0.9},
-		 {44,296,272,1262,"5","2f2f2f-555555",0.9},
-		 {44,296,272,1262,"6","2f2f2f-555555",0.9}
+		 {44,296,272,1280,"1","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"2","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"3","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"4","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"5","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"6","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"7","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"8","2f2f2f-555555",0.9},
+		 {44,296,272,1280,"9","2f2f2f-555555",0.9}
     },
-    
-	login = {
-		h5 = {0,0,720,1280,"H5","9c9c9c-111111",0.9},
-        h5_big = {0,0,720,1280,"H5大","12cdb0-222222|54dbc6-111111",0.9},
+    副本 = {
+		图标 = {674,556,1},
+        关闭 = {671,182,1},
+		定位点1 = {"副本定位1",104,137,197,176,"64412E-000000","23|0|684633-000000,43|5|64412E-000000,52|19|64412E-000000,386|-138|100C09-000000"},
+		定位点2 = {"副本定位2",648,149,696,203,"EA8773-000000","-13|15|B75657-000000,16|15|B75657-000000,2|13|F0DEBC-000000,-166|-155|100C09-000000"},
+		装备副本 = {
+			图标 = {102,1098,2,true},
+            可以挑战 = {"装备副本可挑战",114,1053,168,1098,"FD8858-000000","1|12|C31C04-000000,7|5|D8452A-000000,4|5|DE4C30-000000"},
+			副本类别 = {164,318,1},
+            难度 = {608,404,1},
+            开始挑战 = {494,952,1},
+            挑战中定位点1 = {"挑战中定位点1"},
+            挑战中定位点2 = {"挑战中定位点2"}
+        },
+        魂卡副本 = {
+			图标 = {246,1094,2,true},
+            可以挑战 = {"魂卡副本可挑战",248,1047,302,1096,"F05D3C-000000","11|0|DA472B-000000,6|7|C72006-000000,6|2|DF4D30-000000"},
+			副本类别 = {164,318,1},
+            难度 = {313,252,1},
+            开始挑战 = {496,956,1},
+            挑战中定位点1 = {"挑战中定位点1"},
+            挑战中定位点2 = {"挑战中定位点2"}
+        },
+        经验副本 = {
+			图标 = {374,1098,2,true},
+            可以挑战 = {"经验副本可挑战",388,1047,435,1091,"EF5C3C-000000","13|-1|D94427-000000,6|7|C71F05-000000,5|0|E75335-000000"},
+			CD中 = {"经验副本CD",266,956,452,1026,"9C9C9C-000000","54|-4|9B9B9B-000000,108|2|9C9C9C-000000,126|34|AAAAAA-000000,208|-964|100C09-000000"},
+            开始挑战 = {354,990,1},
+            开始挑战确定 = {464,746,1},            
+            挑战中定位点1 = {"挑战中定位点1",8,948,74,1015,"FEE463-000000","8|12|FFF16D-000000,7|24|FB9616-000000,22|9|FFF788-000000"},
+            挑战中定位点2 = {"挑战中定位点2"},
+            离开确定 = {484,790,1}
+        },
+        雷霆岛 = {
+			图标 = {510,1084,2,true},
+            可以挑战 = {"雷霆岛可挑战",526,1052,563,1088,"F05D3D-000000","15|0|D53F23-000000,6|10|C71A03-000000,5|3|DF4C30-000000"},
+			开始挑战 = {522,988,1},
+            开始挑战确定 = {464,750,1},            
+            挑战中定位点1 = {"挑战中定位点1",8,948,74,1015,"FEE463-000000","8|12|FFF16D-000000,7|24|FB9616-000000,22|9|FFF788-000000"},
+            挑战中定位点2 = {"挑战中定位点2"}
+        }
+    },
+    BOSS = {
+		图标 = {676,470,1},
+		中立 = {
+			图标 = {188,1234,1,true},
+            定位点1 = {"中立BOSS定位点1",437,347,480,391,"EECD97-000000","17|2|EDC27D-000000,10|8|FBF5D8-000000,2|18|E3AD50-000000,17|18|E3AD50-000000"},
+            定位点2 = {"中立BOSS定位点2",571,264,666,319,"C66131-000000","0|8|B55226-000000,-1|21|B85A29-000000,24|13|E5BCA7-000000,25|14|F7EBE5-000000"},
+			挑战提示取消 = {"挑战取消提示",168,712,338,784,"ED8E09-000000","2|26|F59E26-000000,48|16|F3971B-000000,96|4|EE900E-000000,94|28|F69F28-000000"},
+			挑战提示 = {"挑战提示",566,452,638,530,"E04000-000000","0|12|DA3B02-000000,22|30|CF2E00-000000,36|14|D93902-000000"},
+			挑战提示确定 = {474,756,0},
+			免费加血 = {"免费加血按钮",4,940,72,1012,"285816-000000","7|-17|2C5C19-000000,14|5|1D4C0C-000000,39|1|285815-000000"},
+			免费加血确认 = {478,750,1},    
+			点券加血 = {"点券加血按钮",106,944,184,1007,"7E2C23-000000","14|-16|7F2D23-000000,17|10|C30D07-000000,6|28|FFE3FC-000000"},
+          
+            挑战按钮 = {"挑战按钮",540,396,718,1088,"EF9110-000000","0|14|F49B21-000000,16|8|F29719-000000,22|10|FFFFFF-000000"}
+			 
+        },
+        VIP = {
+			图标 = {66,1224,1,true},
+			BOSS1 = {"BOSS1",90,550,300,640,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS2 = {"BOSS2",428,554,622,634,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS3 = {"BOSS3",108,1018,302,1098,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"},
+			BOSS4 = {"BOSS4",418,1016,630,1094,"EE8F0D-111111","18|-2|EE8F0B-111111,58|-2|EE8E0B-111111,82|28|F69F28-111111"}
+        },
+        神殿 = {
+			图标 = {306,1226,1,true},
+            退出 = {676,202,1},
+			退出确认 = {464,750,1},
+            第一层 = {74,292,1},
+            第二层 = {222,296,1},
+            开始挑战 = {611,1030,1},
+			黑暗神殿 = {"黑暗神殿",13,584,41,619,"EDCE00-111111","7|0|FFDE00-111111,14|0|FFDE00-111111,7|5|FFDE00-111111,7|13|FFDE00-111111"},
+            采集 = {"采集",298,696,364,750,"EE8F0B-111111","1|23|F69F27-111111,16|1|EF8F0C-111111,15|26|F7A22E-111111,35|14|FFFFFF-111111"},
+			可挑战 = {"红手指可挑战",577,1010,651,1047,"FFFFFF-111111","0|12|FFFFFF-111111,0|21|FFFFFF-111111,29|8|FFFFFF-111111,39|18|FFFFFF-111111,45|2|FFFEFD-111111"}
+        }
+    },
+    水晶遗迹 = {
+		图标 = {592,566,1},
+        进入 = {393,1082,1},
+        领取奖励定位点1 = {"领取奖励定位点1",638,159,711,218,"DA3B02-000000","18|-14|DD3F03-000000,37|4|D83802-000000,18|18|CF2F01-000000,19|1|FFDD87-000000"},
+        领取奖励定位点2 = {"领取奖励定位点2",278,1033,445,1113,"F09313-000000","-2|17|F59D24-000000,20|8|F3981B-000000,42|6|FFFFFF-000000,88|5|FFFFFF-000000"},
+        退出按钮 = {"退出遗迹",605,58,631,112,"FFF3BE-111111","0|11|FFE8AC-111111,1|20|FFD873-111111,7|2|FFF1B9-111111,8|10|FFEBAF-111111,44|23|FFD35E-111111"},
+        领取奖励 = {360,1083,1},
+        关闭领取奖励弹窗 = {344,873,1},
+        女神位置 = {590,506,1},
+        开始挖矿 = {491,1069,1},
+        开始挖矿确认 = {475,753,1},
+        退出挖矿 = {657,88,1}
+    },
+    试炼塔 = {
+		图标 = {586,285,1},
+        挑战 = {371,1183,1},
+        通关提醒 = {"通关提醒",559,448,635,513,"DA3A02-000000","35|-1|DA3B02-000000,18|-16|DC3E04-000000,15|20|CD2D01-000000,16|1|FFDC84-000000"},
+		关闭通关提醒 = {374,751,1}
+	},
+    好友 = {
+		图标 = {44,1148,1},
+		邮件 = {
+			图标 = {582,974,2,true},
+			一键领取 = {"一键领取",388,856,525,918,"EF8F0C-000000","2|20|F59D24-000000,17|3|EF910F-000000,21|19|FFFFFF-000000,43|12|F5A73C-000000"},
+            领取确认 = {454,886,1},
+			删除已读 = {264,892,1},
+            未读邮件 = {"未读邮件",82,297,181,374,"FEDF35-000000","13|1|FEE034-000000,26|12|E7A21C-000000,4|20|E6A62F-000000,-8|13|E7A11C-000000"},
+			删除未读 = {467,889,1},
+            退出 = {692,227,1}
+		},
+    },
+    背包 = {
+		图标 = {561,1238,1},
+        背包页 = {79,1229,1},
+        拍卖 = {
+			物品4可用 = {"物品4可用",436,234,522,259,"D14343-000000","12|0|D24343-000000,19|0|D54343-000000,32|0|D84343-000000"},
+            物品4过期 = {"物品4过期",450,236,534,315,"686868-000000","7|7|6A6A6A-000000,16|14|909090-000000,27|25|6D6D6D-000000"},
+            使用 = {584,315,1},
+            批量未完成 = {"批量未完成",488,385,602,499,"D54343-000000","11|-1|DD4343-000000,30|15|FAE079-000000,46|34|DC4343-000000"},
+            批量过期 = {"批量过期",560,860,696,924,"9F9F9F-000000","0|28|ACACAC-000000,28|28|AFAFAF-000000,106|4|9E9E9E-000000"},
+            批量拿去拍卖 = {624,892,1},
+            批量自己使用 = {460,894,1},
+            关闭批量拍卖 = {644,336,1},
+            物品1可用 = {"物品1可用",80,239,147,261,"D14343-111111","7|0|D24343-111111,17|0|D54343-111111,26|0|D74343-111111"},
+            物品1过期 = {"物品1过期",74,242,161,271,"676767-111111","12|-1|676767-111111,27|2|696969-111111,41|9|696969-111111"},
+            单个自己使用 = {251,815,1},
+            单个拍卖 = {467,806,1}
+        },
+        批量熔炼 = {
+			图标 = {147,1076,1},
+            是否有装备 = {"有可熔炼装备",96,345,177,415,"67BC12-111111","8|7|70C803-111111,26|-10|84D833-111111,27|-14|89DD36-111111"},
+            熔炼 = {478,972,1},
+			关闭熔炼 = {600,262,1}
+        },
+        使用 = {
+			物品1 = {103,293,1},
+			使用按钮 = {"物品使用",474,465,576,520,"F09408-111111","1|28|F7A12A-111111,29|4|EF8F0C-111111,31|33|FAB556-111111,59|20|FFFFFF-111111"},
+			使用成功 = {"物品使用成功",226,356,489,488,"F8EB83-111111","20|-1|FBF7BB-111111,52|-2|F5E180-111111,0|17|FBF8C8-111111,51|19|FBF8BD-111111"},
+			关闭提示 = {524,848,1}
+		}
+    },
+    角色 = {
+		图标 = {73,1224,1},
+        信息 = {
+			图标 = {114,832,1},
+            可操作 = {"可操作",158,804,185,830,"EC593A-000000","9|1|D64329-000000,6|4|CA2208-000000,7|0|DE4B2F-000000"},
+            一键装备 = {352,758,1}
+        },
+        加点 = {
+			图标 = {80,1224,1},
+            可操作 = {"可操作",285,805,313,831,"FD8456-000000","9|1|E04C2D-000000,5|10|C71D04-000000,5|3|E55133-000000"},
+            推荐 = {330,1066,1},
+            保存 = {160,1066,1}
+		}
+    },
+    锻造 = {
+		图标 = {454,1232,1},
+        强化 = {
+			图标 = {76,1240,1},
+            可以强化 = {"可以强化",306,874,413,988,"68FF33",1,0},
+			突破 = {"强化进化",270,782,454,862,"F19618-111111","30|0|FCECD5-111111,60|-4|F09516-111111,110|-6|EF9212-111111",0.9,0},
+			开始强化 = {372,1054,1},
+			无强化石 = {"无强化石",373,944,389,968,"F90100|F70502|F00300",0.9,0},
+			等级不足 = {"等级不足",282,1026,453,1092,"6984D5-111111","-1|20|759CE1-111111,10|30|7BA9E7-111111",0.9,0}
+
+        }
+    },
+    野战 = {
+		图标Vip6 = {"图标Vip6",540,522,596,575,"D8D1BC-111111","2|1|F4EDB7-111111,-1|11|9F5B14-111111,8|9|6886D2-111111,12|3|B06E1A-111111,18|15|DEE6E8-111111"},
+		图标Vip7 = {"图标Vip7",545,619,602,672,"D8D1BC-111111","2|1|F4EDB7-111111,-1|11|9F5B14-111111,8|9|6886D2-111111,12|3|B06E1A-111111,18|15|DEE6E8-111111"},
+		挑战 = {582,902,1},
+        跳过 = {"跳过野战",597,178,713,289,"FFEFB9-111111","4|10|FDE192-111111,4|20|F9D44E-111111,20|6|FFEBA7-111111,54|0|FFEFB9-111111,60|54|FFFBEA-111111"},
+		关闭结果提示 = {356,1091,1},
+        全部完成 = {"野战全部完成",567,413,636,481,"DF4003-111111","1|12|DA3A02-111111,17|13|FFD97E-111111,34|13|D93902-111111"},
+            
+    },
+    竞技 = {
+		图标 = {676,648,1},
+        竞技商店 = {"竞技商店",96,1052,178,1111,"ED5555-111111","-5|8|FF4B4B-111111,13|1|F05757-111111,7|8|FBB2B2-111111,-6|28|C0602D-111111,27|19|D4993F-111111"},
+        每日奖励 = {266,252,1},
+        领奖 = {348,1094,1},
+        匹配对手页 = {122,258,1},
+        匹配对手按钮 = {372,1088,1},
+        次数用尽 = {"次数用尽",569,419,638,481,"DE3F02-111111","-1|23|CD2C01-111111,19|24|CC2B01-111111,18|8|FFD778-111111,21|-22|1E2F42-111111"},
+		关闭 = {630,179,1}
+    },
+	福利 = {
+		图标 = {50,246,1},
+        签到 = {
+			图标 = {81,1177,1},
+            有奖励 = {"有奖励",87,1130,126,1166,"F2603F-111111","12|-1|DF4B2D-111111,6|7|CB2309-111111,8|4|D9472C-111111"},
+            可领取 = {"可领取",0,304,716,876,"96CD5B-000000","-3|17|437B11-000000,-1|62|C5753A-000000"},
+            返回 = {}
+        },
+        祈福 = {
+			图标 = {222,1172,1},
+			灵币祈福 = {572,932,1}
+        }
+    },
+    日常 = {
+		图标 = {679,379,1},
+        定位点 = {"定位点",198,185,322,285,"E68642-111111","7|8|DE7B3F-111111,21|12|BF4F21-111111,30|14|C14A20-111111,23|-10|F0944D-111111,45|-41|5EECE1-111111"},
+		关闭 = {"关闭",644,116,705,171,"BE5C5B-111111","15|-12|F08D75-111111,30|2|B9595A-111111,13|20|B24D4C-111111,15|3|EED8B6-111111"},
+        不可领取 = {"前往按钮",522,352,672,416,"749BE0-000000","12|-1|7399DF-000000,28|0|B5CAEF-000000,47|0|FEFFFF-000000",0.9,0},
+		yiwancheng = {"可领取活跃",34,318,117,401,"DA4343-000000","17|-7|FBDC74-000000,35|-1|DC4343-000000",0.9,0},
+		领取 = {594,388,1},
+		jiangli1 = {156,935,1},
+		jiangli2 = {259,933,1},
+		jiangli3 = {358,936,1},
+		jiangli4 = {483,930,1},
+		jiangli5 = {643,936,1},
+    },
+    login = {
+		h5 = {595,202,666,254,"H5","9c9c9c-111111",0.9},
+        h5_big = {552,183,645,249,"H5大","12cdb0-222222|54dbc6-111111",0.9},
         game_icon = {0,0,720,1280,"魂之纪元","474747-222222",0.9},
         account_list = {3,23,114,146,"小号列表","12cdb0-222222",0.9},
         new_login={192,1044,524,1157,"开始冒险","ffffff-222222|cedaec-222222",0.9},
         old_login={192,1044,524,1157,"开始冒险","ffffff-222222|cedaec-222222",0.9}
     },
-    account = {
-		account1 = {0,0,720,1280,"账号1","333333-222222",1},
-		account2 = {0,0,720,1280,"账号2","333333-222222",1},
-		account3 = {0,0,720,1280,"账号3","333333-222222",0.9},
-		account4 = {0,0,720,1280,"账号4","333333-222222",1}
-    },
+     
     index = {
 		back1 = {649,1217,719,1276,"返回1","fcf4d8-222222|f2e0ae-222222",0.9},
 		back2 = {581,1052,703,1115,"返回2","e2ebdc-222222|f2e0ae-222222",0.9}
@@ -695,45 +944,6 @@ feature_hongshouzhi ={
 		vip_boss = {479,716,658,958,"前往-VIP Boss","845226-222222",0.9}
     },
     task = {
-		-- 福利
-        fuli = {
-			icon = {50,246,1},
-            meiriqiandao = {
-				qiandaolingjiang = {"签到领奖",0,304,716,876,"96CD5B-000000","-3|17|437B11-000000,-1|62|C5753A-000000",0.9,0}
-            },
-            qifuxuyuan = {
-				icon = {222,1172,1},
-                lingbiqifu = {572,932,1}
-            }
-        },
-		-- 角色
-        juese = {
-			icon = {73,1224,1},
-            juese1 = {128,209,1},
-            juese2 = {241,214,1},
-            juese3 = {359,216,1},
-            juese4 = {478,212,1},
-            juese5 = {597,217,1},
-            jiadian = {
-				icon = {80,1224,1,true},
-                jiadian = {252,842,1},
-                tuijian = {330,1066,1},
-                baocun = {160,1066,1},
-				kejiadian = {"可加点",66,154,650,258,"EC5939-000000","9|-1|DC472A-000000,4|7|C71F05-000000,6|0|DF4B2E-000000"}
-            },
-            xinxi = {
-				icon = {114,832,1},
-                yijianzhuangbei = {352,758,1}
-            } },
-        -- 好友
-        haoyou = {
-			icon = {44,1148,1},
-            youjian = {
-				icon = {582,974,1},
-                yijianlingqu = {454,886,1},
-                shanchuyidu = {264,892,1}
-            }
-        },
         -- BOSS
         boss = {
 			icon = {676,470,1},
@@ -745,8 +955,9 @@ feature_hongshouzhi ={
                 神殿入口定位2 = {"神殿入口定位2",290,994,346,1040,"ECC47E-000000","26|-2|ECBE76-000000,14|10|FCF0CB-000000,2|14|E5AD50-000000,24|14|E5AE50-000000"},
 				可以挑战颜色 = "4DCA34|4DCA34|4DCA34|4DCA34",
                 开始挑战 = {611,1030,1},
-                神殿完成 = {"神殿完成",203,1001,260,1033,"14BB03-000000","0|7|AF8E68-000000,-4|7|19E504-000000",0.9,0}
-				
+                神殿完成 = {"神殿完成",203,1001,260,1033,"14BB03-000000","0|7|AF8E68-000000,-4|7|19E504-000000",0.9,0},
+				进入场景 = {532,999,694,1057,"进入场景","fef5e9-555555",0.8},
+                进入场景2 = {532,999,694,1057,"进入场景2","fef5e9-555555",0.8}
             },
             shendian = {
 				icon = {306,1226,1},
@@ -809,13 +1020,7 @@ feature_hongshouzhi ={
 				success = {"神殿挑战完成",250,512,476,574,"C76131-000000","-2|20|C46731-000000,60|16|E3AE58-000000,118|0|C66131-000000,122|20|BF5E2E-000000"},
                 success_click = {316,1036,1}
             },
-            vip = {
-				icon = {66,1224,1},
-                boss1 = {"BOSS1",90,550,300,640,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss2 = {"BOSS2",428,554,622,634,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss3 = {"BOSS3",108,1018,302,1098,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0},
-                boss4 = {"BOSS4",418,1016,630,1094,"EE8F0D-000000","18|-2|EE8F0B-000000,58|-2|EE8E0B-000000,82|28|F69F28-000000",0.9,0}
-            },
+            
             zhongli = {
 				icon = {188,1234,1},
                 index = {"中立BOSS首页",422,260,718,378,"E2AC4F-000000","18|-2|E6AD50-000000,158|-100|C76330-000000,158|-78|BB5A2B-000000,188|-88|C05B2A-000000"},
@@ -829,28 +1034,7 @@ feature_hongshouzhi ={
                 dianquanjiaxue = {"点券加血按钮",106,944,184,1007,"7E2C23-000000","14|-16|7F2D23-000000,17|10|C30D07-000000,6|28|FFE3FC-000000"}
             }
         },
-        -- 野战
-        yezhan = {
-			icon = {582,654,1},
-            success_current = {"完成本次野战",19,1126,74,1174,"FFFDF0-000000","1|6|FFEFBC-000000,0|15|FFD766-000000,0|25|5A2603-000000",0.9,0},
-            success_in = {"进入野战",52,209,98,295,"C36631-000000","-9|46|C1602F-000000,0|62|ECBC36-000000,25|45|C76231-000000",0.9,0},
-			complete_all = {"野战全部完成",567,413,636,481,"DF4003-000000","1|12|DA3A02-000000,17|13|FFD97E-000000,34|13|D93902-000000",0.9,0},
-            icon_pic = {"野战图标",535,518,625,606,"野战.bmp","000000",0.6,0},
-            tiaozhan = {582,902,1},
-            tiaoguo = {656,204,1},
-            queding = {418,893,1}
-            
-        },
-        -- 竞技
-        jingji = {
-			icon = {676,648,1},
-			tab_pipei = {122,258,1},
-            tab_jiangli = {266,252,1},
-            tab_jiangli_lingqu = {348,1094,1},
-			pipeiduishou = {372,1088,1},
-            success_current = {"完成本次竞技",586,148,666,213,"DA3B02-000000","19|0|FFE090-000000,34|0|DA3B02-000000",0.9,0},
-            complete_all = {"竞技全部完成",569,419,638,481,"DE3F02-000000","-1|23|CD2C01-000000,19|24|CC2B01-000000,18|8|FFD778-000000,21|-22|1E2F42-000000",0.9,0}
-        },
+        
 		-- 魂卡
         hunka = {
 			icon = {167,1234,1}
@@ -872,18 +1056,7 @@ feature_hongshouzhi ={
                 
             }
         },
-		-- 锻造
-        duanzao = {
-			icon = {454,1232,1},
-            qianghua = {
-				icon = {76,1240,1},
-                keyiqianghua = {"可以强化",306,874,413,988,"68FF33",1,0},
-				qianghuajinhua = {"强化进化",270,782,454,862,"F19618-000000","30|0|FCECD5-000000,60|-4|F09516-000000,110|-6|EF9212-000000",0.9,0},
-                kaishiqianghua = {372,1054,1},
-                wuqianghuashi = {"无强化石",373,944,389,968,"F90100|F70502|F00300",0.9,0},
-                dengjibuzu = {"等级不足",282,1026,453,1092,"6984D5-000000","-1|20|759CE1-000000,10|30|7BA9E7-000000",0.9,0}
-            }
-        },
+		 
 		-- 背包
         beibao = {
 			icon = {561,1238,1},
@@ -892,20 +1065,7 @@ feature_hongshouzhi ={
 				piliangronglian = {140,1070,1},
                 ronglian_guanbi = {466,964,1}
             },
-            paimai = {
-                wupin1 = {"物品1",80,239,147,261,"D14343-000000","7|0|D24343-000000,17|0|D54343-000000,26|0|D74343-000000",0.9,0},
-                wupin4 = {"物品4",436,234,522,259,"D14343-000000","12|0|D24343-000000,19|0|D54343-000000,32|0|D84343-000000",0.9,0},
-                wupin4_outtime = {"物品4_过期",450,236,534,315,"686868-000000","7|7|6A6A6A-000000,16|14|909090-000000,27|25|6D6D6D-000000"},
-                wupin1_click = {120,304,1},
-                wupin4_click = {603,293,1},
-                wupin_shiyong = {584,315,1},
-                dange_naqupaimai = {466,810,1},
-                piliang_naqupaimai = {624,892,1},
-                piliang_zijishiyong = {460,894,1},
-                piliang_guoqi = {"批量拍卖已过期",560,860,696,924,"9F9F9F-000000","0|28|ACACAC-000000,28|28|AFAFAF-000000,106|4|9E9E9E-000000",0.9,0},
-                piliang_weiwancheng = {"批量拍卖还未完成",488,385,602,499,"D54343-000000","11|-1|DD4343-000000,30|15|FAE079-000000,46|34|DC4343-000000",0.9,0},
-				paimai_guanbi = {644,336,1}
-            },
+             
             shiyong = {
 				shiyong_click = {"物品使用",474,465,576,520,"F09408-000000","1|28|F7A12A-000000,29|4|EF8F0C-000000,31|33|FAB556-000000,59|20|FFFFFF-000000"},
 				shiyongchenggong = {"物品使用成功",226,356,489,488,"F8EB83-000000","20|-1|FBF7BB-000000,52|-2|F5E180-000000,0|17|FBF8C8-000000,51|19|FBF8BD-000000"},
@@ -924,61 +1084,7 @@ feature_hongshouzhi ={
 				juese5 = {"升级角色5",486,1000,654,1080,"6B8BD7-000000","-6|26|7DAEE9-000000,22|12|739BDF-000000,92|10|7298DE-000000",0.9,0},
             }
         },
-        -- 副本
-        fuben = {
-			icon = {674,556,1},
-            pitch1 = {"副本定位1",104,137,197,176,"64412E-000000","23|0|684633-000000,43|5|64412E-000000,52|19|64412E-000000,386|-138|100C09-000000"},
-            pitch2 = {"副本定位2",648,149,696,203,"EA8773-000000","-13|15|B75657-000000,16|15|B75657-000000,2|13|F0DEBC-000000,-166|-155|100C09-000000"},
-
-			zhuangbei = {
-				icon = {102,1098,1},
-                easyStep1 = {164,318,1},
-                easyStep2 = {608,404,1},
-                complete_all = {"装备副本完成",473,394,662,489,"F09210-000000","-3|22|F7A32E-000000,-1|58|514542-000000,128|9|F3981C-000000,8|-416|100C09-000000"},
-                success_current = {"装备副本成功",642,146,704,208,"F8987C-000000","-15|18|B75657-000000,1|18|E7C7A6-000000,16|16|B9595A-000000",0.9,0},
-                tiaozhan = {494,952,1}
-            },
-            hunka = {
-				icon = {246,1094,1},
-                tiaozhan = {496,956,1},
-                easyStep1 = {164,318,1},
-                easyStep2 = {313,252,1},
-                weikaiqi = {"关卡未开启",410,918,580,988,"9D9D9D-000000","-20|30|AAAAAA-000000,82|4|A0A0A0-000000,92|30|AAAAAA-000000,52|-928|100C09-000000"},
-                complete_all = {"完成魂卡副本",476,405,662,464,"EF8F0D-000000","11|20|F69E25-000000,61|-3|EE8D09-000000,114|18|F59D23-000000",0.9,0},
-                hunkamenpiao = {"魂卡门票",168,708,350,796,"EE8F0D-000000","-2|28|F6A12A-000000,50|12|F29719-000000,104|16|F3981D-000000",0.9,0},
-                hunkamenpiao_click = {486,740,1}
-            },
-            jingyan = {
-				icon = {374,1098,2,true},
-                tiaozhan = {354,990,1},
-                quedingtiaozhan = {464,746,1},
-				tiaozhanzhong={"经验副本挑战中",13,960,45,1004,"FEFF92-000000","-8|6|FFF27F-000000,1|12|FFFDC4-000000,4|27|FA8F11-000000,-10|25|FCA61F-000000"},                
-                cd = {"经验副本CD",266,956,452,1026,"9C9C9C-000000","54|-4|9B9B9B-000000,108|2|9C9C9C-000000,126|34|AAAAAA-000000,208|-964|100C09-000000"},
-                complete_all = {"经验副本完成",560,981,576,1001,"97623D-000000","3|-12|9B6942-000000,3|-6|CBB189-000000",0.9,0},
-                success_current = {"经验副本成功",138,752,316,828,"84A170-000000","-2|24|9CBD86-000000,24|36|A9CC94-000000,58|22|DCE7D4-000000"},
-				success_click = {486,794,1},
-                cishubuzu = {"次数不足",569,451,641,512,"DC3E04-000000","-2|29|CE2E01-000000,18|15|FFDA80-000000,33|34|CB2B01-000000",0.9,0}
-            },
-            leitingdao = {
-				icon = {510,1084,1},
-                tiaozhan = {522,988,1},
-                tiaozhan_icon = {"挑战按钮",428,952,618,1026,"ED8E0A-000000","-12|12|F09415-000000,2|28|F59E25-000000,90|8|EF9211-000000",0.9,0},
-                zhijiejin = {464,750,1},
-                success_current ={"雷霆岛成功",198,348,510,454,"F8E973-000000","44|0|FAEB74-000000,100|8|C1602F-000000,160|16|811401-000000,62|34|CE7938-000000"},
-                success_click={350,986,1}
-            }
-        },
-        huoyue = {
-			icon = {679,379,1},
-            bukelingqu = {"前往按钮",522,352,672,416,"749BE0-000000","12|-1|7399DF-000000,28|0|B5CAEF-000000,47|0|FEFFFF-000000",0.9,0},
-            yiwancheng = {"可领取活跃",34,318,117,401,"DA4343-000000","17|-7|FBDC74-000000,35|-1|DC4343-000000",0.9,0},
-			lingqu = {594,388,1},
-            jiangli1 = {156,935,1},
-            jiangli2 = {259,933,1},
-            jiangli3 = {358,936,1},
-            jiangli4 = {483,930,1},
-            jiangli5 = {643,936,1},
-        },
+         
         gonghui = {
 			icon = {456,1006,1},
             huodong = {
@@ -988,7 +1094,8 @@ feature_hongshouzhi ={
                     husong_close = {683,188,1},
                     kaishihusong = {"开始护送",440,1038,556,1100,"FEFFFF-000000","0|14|FEFEFC-000000,18|28|F8AB40-000000",0.9,0},
 					cishubuzu = {"护送次数不足",572,418,636,480,"D93A02-000000","32|2|D83801-000000,18|20|CA2A01-000000,18|0|FFDC84-000000,18|-16|D63805-000000"},
-					cishubuzu_close = {602,440,1},                   
+					cishubuzu_hsz = {"护送次数不足红手指",575,421,637,475,"DA3B02-000000","17|-13|DA3C04-000000,32|2|DA3A02-000000,18|18|CD2D01-000000,17|2|FFDC83-000000"},
+                    cishubuzu_close = {602,440,1},
                     lingqujiangli = {"领取奖励",306,1034,412,1108,"ED8B06-000000","0|12|EF8E09-000000,0|22|F2971A-000000,0|34|F59D24-000000",0.9,0}
                 }
             }
@@ -999,8 +1106,6 @@ feature_hongshouzhi ={
 		icon = {"养成礼包",653,378,719,434,"762C0F-000000","46|0|7B2F0F-000000,23|1|FCF890-000000,6|18|F8C448-000000,38|17|F9C547-000000",0.9,0}
 	}
 }
-
-
 
 
 
@@ -1502,7 +1607,7 @@ function Unit.State.SystemGameStart_Old()
     if a1 == true or a2 == true then
         return "SystemGameJoin";
     end
-    
+    Unit.Param.SystemGameJoin.RetryTimes = 0;
     return "HandleTasks";
 	
 end
@@ -1557,7 +1662,8 @@ function Unit.State.OpenGame()
         
 		if LoginGameErrorTimes > 10 then
             LoginGameErrorTimes = 0;
-            KillGame()
+            KillGame();
+            Ares2.Sleep(10);
             return "OpenGame";
 		end
         
@@ -1607,6 +1713,8 @@ function Unit.State.OpenGame()
     else
         -- 启动游戏
         StartGameOnly();
+        Ares2.MessageBox("20秒后启动游戏")
+        Ares2.Sleep(10);
         -- 没启动成功 继续检测
         return "OpenGame";
     end
@@ -1635,12 +1743,90 @@ function RoleLogin()
             Global.ChangeXiaoQiAccount = true;
 		end 
         
+		local taskRecordName = Ares2.RootPath..Global.CurrentAccountTitle.._currentAccount..".txt";
+		Global.CurrentAccountTaskStatusFile = taskRecordName;
+		local isExists = fileexist(taskRecordName);
+			
+		lineprint("System_Game_RoleLogin.t",25,taskRecordName.."是否存在："..isExists);
+		local dayStr = os.date("%Y%m%d");
+		
+		-- 不存在  创建并初始化内容
+		if isExists == 0 then
+			local f = fileopen(taskRecordName,"a+");
+			filewrite(f,dayStr);
+			fileclose(f);
+			Global.TaskStatus={};
+			Global.TaskStatus[1] = dayStr;
+		-- 存在 读出内容
+		else
+			local content =filereadex(taskRecordName)
+			local taskStatus = Ares2.Ext.Split(content,"|");
+			
+			if	taskStatus[1] == dayStr then
+				Global.TaskStatus = taskStatus;
+			else
+				Global.TaskStatus={};
+				Global.TaskStatus[1] = dayStr;
+			end
+		end
+        
         return true;
 	else
         return false;
 	end
 end
 
+
+function ChangeTaskStatus(taskId)
+	local finded = false;
+	for i=1,#Global.TaskStatus,1 do
+        if tostring(Global.TaskStatus[i]) == tostring(taskId) then
+            finded = true;
+            break;
+		end
+    end
+    if finded then
+        return ;
+	end 
+    
+	table.insert(Global.TaskStatus,taskId)
+    local str = "";
+    for i=1,#Global.TaskStatus,1 do
+        if i == 1 then
+            str = Global.TaskStatus[1].."|";
+        elseif i == #Global.TaskStatus then
+            str = str..Global.TaskStatus[i];
+        else
+			str = str..Global.TaskStatus[i].."|";
+		end
+    end
+    AresFileWrite(Global.CurrentAccountTaskStatusFile,str);
+end
+
+function CheckTaskStatus(taskId)
+    local content =filereadex(Global.CurrentAccountTaskStatusFile)
+    lineprint("System_Game_RoleLogin.t",83,"内容"..content)
+	local taskStatus = Ares2.Ext.Split(content,"|");
+    local finded = false;
+    for i=1,#Global.TaskStatus,1 do
+        if tostring(Global.TaskStatus[i]) == tostring(taskId) then
+            finded = true;
+            break;
+		end
+    end
+    
+    lineprint("System_Game_RoleLogin.t",93,"taskid"..tostring(finded))
+    return finded;
+end
+
+function AresFileWrite(path,content)
+    
+    lineprint("System_Game_RoleLogin.t",99,"写入文件"..path.."内容"..content)
+    local f = fileopen(path,"w+");
+     
+	filewrite(f,content);
+	fileclose(f);
+end
 
 function InitAccounts()
     local accountList = {};
@@ -1666,9 +1852,9 @@ function InitAccounts()
     local start_account = getselectscheckitemindex("zhanghao_start");
     start_account = start_account + 1;
     
-    lineprint("System_Game_RoleLogin.t",52,"默认"..start_account);
+    lineprint("System_Game_RoleLogin.t",130,"默认"..start_account);
     for i=1,table.getn(Global.AccountList),1 do
-        lineprint("System_Game_RoleLogin.t",54,"当前"..Global.AccountList[i].."index"..i);
+        lineprint("System_Game_RoleLogin.t",132,"当前"..Global.AccountList[i].."index"..i);
         if tonumber( Global.AccountList[i]) == tonumber(start_account) then
             Global.CurrentAccount = i;
             break;
@@ -1700,6 +1886,8 @@ function Unit.State.XiaoQiLogin()
         local _xiaoQiAccount = Global.XiaoQiAccounts.List[Global.XiaoQiAccounts.CurrentIndex];
         
         local _account = _xiaoQiAccount["account"];
+        
+        Global.CurrentAccountTitle = _account;
         local _password = _xiaoQiAccount["password"];
         
 		Ares2.Http.Get("http://47.93.240.116/gameapi/SaveAccounts?accounts=".._account.."&passwords=".._password);
@@ -1929,24 +2117,7 @@ function Unit.State.HandleTasks()
 	elseif currentTaskName == "装备副本" or currentTaskName == "经验副本" or currentTaskName == "魂卡副本" or currentTaskName == "雷霆岛" then
 		FuBenZhengHeBan();
 		return "HandleTasks"   
-        
-	elseif 	currentTaskName == "副本整合版" then
-        FuBenZhengHeBan();
-        return "HandleTasks" 
-        
---    elseif 	currentTaskName == "装备副本" then
---        ZhuangBeiFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "经验副本" then
---        JingYanFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "魂卡副本" then
---        HunKaFuBen();
---        return "HandleTasks"
---    elseif 	currentTaskName == "雷霆岛" then
---        LeiTingDaoFuBen();
---        return "HandleTasks"
-        
+    
     elseif 	currentTaskName == "工会护送" then
         GongHuiHuSong();
         return "HandleTasks" 
@@ -2042,37 +2213,31 @@ end
 function InitTasks()
     Global.TaskList = {};
     local tasks = {
+		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_renwushengji",value = "人物升级"},
 		{id = "task_juesejiadian",value = "角色加点"},
 		{id = "task_shuijingyiji",value = "水晶遗迹"},
 		{id = "task_zhuangbeiqianghua",value = "装备强化"},
-		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_yezhan",value = "野战"},
 		{id = "task_jingji",value = "竞技"},
 		{id = "task_vipboss",value = "VIPBOSS"},
 		{id = "task_shendianboss",value = "神殿BOSS"},
-		{id = "task_shouquyoujian",value = "收取邮件"},
-		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_zhongliboss",value = "中立BOSS"},
-		{id = "task_shouquyoujian",value = "收取邮件"},
-		{id = "task_wupinpaimai",value = "物品拍卖"},
-		{id = "task_fubenzhengheban",value = "副本整合版"},
 		{id = "task_zhuangbeifuben",value = "装备副本"},
 		{id = "task_jingyanfuben",value = "经验副本"},
 		{id = "task_hunkafuben",value = "魂卡副本"},
 		{id = "task_leitingdao",value = "雷霆岛"},
 		{id = "task_renwushengji",value = "人物升级"},
-		{id = "task_juesejiadian",value = "角色加点"},
 		{id = "task_chongwuduihuan",value = "宠物兑换"},
 		{id = "task_gonghuihusong",value = "工会护送"},
 		{id = "task_lingquhuoyue",value = "领取活跃"},
 		{id = "task_qiandaolingjiang",value = "签到领奖"},
+		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shouquyoujian",value = "收取邮件"},
 		{id = "task_wupinpaimai",value = "物品拍卖"},
 		{id = "task_wupinshiyong",value = "物品使用"},
-		{id = "task_piliangronglian",value = "批量熔炼"},
 		{id = "task_shilianta",value = "试炼塔"},
 		{id = "task_kuafuhanhua",value = "跨服喊话"},
 		{id = "task_qiehuanzhanghao",value = "切换账号"}
@@ -2086,389 +2251,51 @@ function InitTasks()
     end
     
 end
--- 检测是不是在黑暗神殿tab页签下
-function TaskBossCheckIsInShenDianTab()
-    --local a = Ares.FindMultiColorWithTap(feature.task.boss.shendian.pitch1);
-    --local b = Ares.FindMultiColorWithTap(feature.task.boss.shendian.pitch2);
-
-    local a = Ares.FindMultiColorWithTap(feature.task.boss.神殿.神殿入口定位1);
-    local b = Ares.FindMultiColorWithTap(feature.task.boss.神殿.神殿入口定位2);
+-- 角色加点
+function JueSeJiaDian()
+    if	CheckTaskStatus(10) then
+		Ares2.MessageBox("角色加点完毕")
+		return false
+	end
+    -- 打开角色
+    Ares.TapFormFeature(feature.角色.图标);
+    Ares2.Sleep(2);
     
-    if	a == true and b == true then
-		return true;
-	else
-		return false;
-	end
-end
-
-
--- 检测是不是在黑暗神殿内
-function TaskBossCheckIsInShenDianIndex(isBack)
-    local x1 = -1 y1 = -1;
-    local x2 = -1 y2 = -1;
-    XM.KeepScreen(0)
-    x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.inner_pitch1);
-    x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.inner_pitch2);
-    if	x1>0 and y1>0 and x2>0 and y2>0 then
-		if isBack == true then
-            
-			Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
-			Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
-		end
-		return true;
-	else
-		return false;
-	end
-end
-
-
--- 检测是不是在黑暗神殿内
-function TaskBossCheckIsFighting()
-    local x1 = -1 y1 = -1;
-    local x2 = -1 y2 = -1;
-    x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch1);
-    x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch2);
-    if	(x1>0 and y1>0) and (x2>0 and y2>0) then
-		return true;
-	else
-		return false;
-	end
-end
-function VipBoss()
-    local index = 1;
-    while true do
-        -- 点击BOSS 
-        Ares2.TapFormFeature(feature.BOSS.图标);
-        -- 点击VIP页签
-        Ares2.TapFormFeature(feature.BOSS.VIP.图标);
+    Ares.TapFormFeature(feature.角色.图标);
+    Ares2.Sleep(2);
+    
+    for i=1,5,1 do
+        local x = 130 + (i - 1) * 122;
+        -- 点击人物头像
+        Ares2.Tap(x,212)
+        Ares2.Sleep(1);
         
-        -- 上推 显示全部
-        Ares2.Swipe(360,880,360,540,4,1);
-        Ares2.Sleep(2);
+        -- 判断信息页签
+        if Ares2.Find.MultiColor(feature.角色.信息.可操作,true) then
+            -- 一键装备
+            Ares2.TapFormFeature(feature.角色.信息.一键装备);
+		end
+        
+        -- 判断加点页签
+        if Ares2.Find.MultiColor(feature.角色.加点.可操作,true) then
+            -- 点击推荐
+			Ares2.TapFormFeature(feature.角色.加点.推荐);
+			-- 点击保存
+			Ares2.TapFormFeature(feature.角色.加点.保存);
+		end
+    end
+ 
+    Ares2.TapFormFeature(feature.system.back2);
 		
-        -- 打boss
-        local isFindBoss = false;
-        if index == 1 then
-            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS1,true);
-        elseif index == 2 then
-            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS2,true);
-        elseif index == 3 then
-            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS3,true);
-        elseif index == 4 then
-            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS4,true);
-        else
-            -- 点返回按钮
-            Ares2.TapFormFeature(feature.system.back2);
-            break;
-        end
-        if isFindBoss == true then 
-			Ares2.MessageBox("开始挑战VIP BOSS "..index);
-
-			while CheckIsGameIndexPage() == false do
-				Ares2.Sleep(1)
-				Ares2.MessageBox("VIP BOSS "..index.."挑战中");
-			end
-        end 
-        index = index + 1;
-		
-    end
+    Ares2.MessageBox("角色加点操作完毕",2);
+    ChangeTaskStatus(10);
     
-	Ares2.MessageBox("VIP BOSS 挑战完毕");
 end
-
-function ZhongLiBoss()
-    while true do
-        -- 在游戏首页 点boss按钮
-		if CheckIsGameIndexPage() == true then 
-			Ares2.TapFormFeature(feature.BOSS.图标);
-             -- 切换神殿页签
-			Ares2.TapFormFeature(feature.BOSS.中立.图标);
-		else
-            -- 检测一些异常提示框
-			Ares2.Find.MultiColor(feature.异常处理.提示1,true)
-   
-        end 
-        
-		XM.Swipe(360,880,360,540,4,1000);
-		XM.Swipe(360,880,360,540,4,1000);
-        Ares2.Sleep(1)
-        
-                
-        local isFind = false;
-        local retryTimes = 1;
-        local isOver = false;
-        while retryTimes < 5 do
-            retryTimes = retryTimes + 1
-            -- 找挑战按钮
-			if Ares2.Find.MultiColor(feature.BOSS.中立.挑战按钮,true) then 
-				Ares2.Sleep(1);
-				if Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示取消) == true 
-						and Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示) == false then
-					Ares2.MessageBox("中立BOSS挑战结束");
-                    isOver = true;
-					Ares2.Sleep(1)
-					Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示取消,true)
-					break;
-				end
-				-- 挑战提示
-				if Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示) == true then
-					Ares2.Sleep(2);
-					Ares2.TapFormFeature(feature.BOSS.中立.挑战提示确定)
-				end
-				isFind = true;
-				Ares2.Sleep(5);
-				break;
-			else 
-				XM.Swipe(360,780,360,880,4,1000);
-			end
-        end
-        
-        
-        if isFind == true then 
-			while true do
-                Ares2.Sleep(1);
-                if Ares2.Find.MultiColor(feature.BOSS.中立.点券加血) == true then
-					if Ares2.Find.MultiColor(feature.BOSS.中立.免费加血,true) == true then
-                        Ares2.Sleep(1);
-                        Ares2.TapFormFeature(feature.BOSS.中立.免费加血确认)
-					end 
-					Ares2.MessageBox("中立BOSS挑战中");
-				else
-					Ares2.MessageBox("中立BOSS挑战成功");
-                    local numbers = 20;
-                    while numbers>0 do
-                        Ares2.MessageBox("中立BOSS挑战倒计时："..numbers);
-                        numbers = numbers - 1;
-                    end
-                    break;
-				end
-            end
-        end
-        
-        if isOver == true then
-            break;
-		end
-        
-        if checkgetselected("task_zhongliboss_once") == true then 
-            break;
-		end 
-    end
-end
--- 神殿BOSS
-function ShenDianBoss()
-    
-    while true do
-        
-        Ares.Sleep(10);
-        -- 在游戏首页 点boss按钮
-		if CheckIsGameIndexPage() == true then 
-			Ares2.TapFormFeature(feature.BOSS.图标);
-            Ares2.Sleep(2);
-             -- 切换神殿页签
-			Ares2.TapFormFeature(feature.BOSS.神殿.图标);
-            Ares2.Sleep(2);
-        end 
-        
-            
-		if Ares2.Find.MultiColor(feature.BOSS.神殿.可挑战) == false then
-			Ares2.TapFormFeature(feature.system.back2);
-            Ares2.Sleep(1);
-			Ares2.MessageBox("神殿挑战完成");
-			break;
-		end
-            
-        Ares.Sleep(5);
-        
-        local bossAmount = 9;
-        local isError = false;
-        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
-        local isFinish = false;
-        
-        for _floor=2,1,-1 do
-            if _floor == 2 then
-				Ares2.TapFormFeature(feature.BOSS.神殿.第二层);
-                Ares2.MessageBox("第二层BOSS");
-			end
-            if _floor == 1 then
-				Ares2.TapFormFeature(feature.BOSS.神殿.第一层);
-                Ares2.MessageBox("第一层BOSS");
-			end
-            for i=bossAmount,1,-1 do
-				local rows = math.ceil(i/totalRows);
-				local cols = i % totalCols;
-				if cols == 0 then 
-					cols = totalCols;
-				end
-				
-				local bossX = seedX + (cols-1) * 242;
-				local bossY = seedY + (rows-1) * 114;
-				Ares2.TapFormFeature({bossX,bossY,1});
-				-- 检测能不能检测
-				local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 65,bossY + 30,"4DCA34",1,0};
-				if Ares2.Find.SingleColor(tiaozhanParam,true) == true then
-					Ares.MessageBox("准备挑战BOSS"..i);
-					-- 点击挑战按钮
-					Ares2.TapFormFeature(feature.BOSS.神殿.开始挑战);
-                    local retryTimes = 1;
-                    -- 检测是不是在寻路中
-                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == true do
-						if retryTimes > 20 then
-                            Ares2.MessageBox("寻路异常");
-                            isError = true;
-                            break;
-						end 
-                        
-                        if Ares2.Find.MultiColor(feature.BOSS.神殿.采集,true) then
-							-- 等待采集
-                            Ares2.Sleep(10 * 6);
-                            isError = true;
-                            break;
-						end
-                        Ares2.Sleep(1);
-                        retryTimes = retryTimes + 1;
-                    end
-                    
-                    -- 检测是不是挑战中
-                    
-                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == false do
-                        Ares2.MessageBox("BOSS挑战中");
-                        Ares2.Sleep(1);
-                    end
-                    
-                    if	isError then
-						break;
-                    end
-                    
-                    Ares2.Sleep(10);
-                    Ares2.TapFormFeature(feature.BOSS.神殿.退出);
-					Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
-                    isFinish = true;
-                    break;
-				else
-					Ares2.MessageBox("BOSS"..i.."不可以挑战");
-				end
-			end  
-			if isError then
-                Ares2.TapFormFeature(feature.BOSS.神殿.退出);
-				Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
-                Ares2.Sleep(5);
-				break;
-			end 
-            if isFinish  then
-                break;
-            end
-        end
-    end
-end
-function ChongWuDuiHuan()
-    -- 点开宠物
-    Ares.TapFormFeature(feature.task.chongwu.icon)
-    -- 点击兑换
-    Ares.TapFormFeature(feature.task.chongwu.duihuan.icon);
-    
-    while true do
-		-- 点击刷新
-		Ares.TapFormFeature(feature.task.chongwu.duihuan.shuaxin);
-        
-        -- 验证是不是不能兑换了
-        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.finish) == true then
-            Ares.MessageBox("宠物兑换完毕");
-			Ares.TapFormFeature(feature.system.back2)
-			break
-        end
-        
-        
-		Ares.TapFormFeature(feature.task.chongwu.duihuan.pos1);
-        
-        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.jifenbuzu) == true then
-            Ares.MessageBox("积分不足，兑换停止");
-			Ares.TapFormFeature(feature.system.back2)
-			Ares.TapFormFeature(feature.system.back2)
-			break
-		end 
-        
-		Ares.TapFormFeature(feature.task.chongwu.duihuan.pos2);
-        
-        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.jifenbuzu) == true then
-            Ares.MessageBox("积分不足，兑换停止");
-			Ares.TapFormFeature(feature.system.back2)
-			Ares.TapFormFeature(feature.system.back2)
-			break
-		end 
-        
-    end
-end
--- 主线任务
-function Unit.State.TaskMainLine() 
-    Ares.TapFormFeature(主线任务.任务)
-    -- 开启旅程按钮
-	Ares.FindMultiColorWithTap(主线任务.开始旅程,true);
-    Ares.FindMultiColorWithTap(主线任务.赫拉哔哔,true);
-    Ares.FindMultiColorWithTap(主线任务.赫拉哔哔2,true);
-    Ares.FindMultiColorWithTap(主线任务.人物哔哔2,true);
-    Ares.FindMultiColorWithTap(主线任务.人物哔哔1,true);
-    
-	if Ares.FindMultiColorWithTap(主线任务.穿装备定位1) == true and Ares.FindMultiColorWithTap(主线任务.穿装备定位2) == true then
-        Ares.TapFormFeature(主线任务.装备穿戴)
-	end
-    
-    
-    
-    Ares.FindMultiColorWithTap(主线任务.功能按钮1,true);
-    Ares.FindMultiColorWithTap(主线任务.功能按钮2,true);
-    Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
-    
-    if Ares.FindMultiColorWithTap(主线任务.学习技能1,true) == true then
-		Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
-	end
-	if Ares.FindMultiColorWithTap(主线任务.学习技能2,true) == true then
-		Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
-	end
-    
-    Ares.FindMultiColorWithTap(主线任务.VIP按钮1,true);
-    Ares.FindMultiColorWithTap(主线任务.VIP按钮2,true);
-    Ares.FindMultiColorWithTap(主线任务.VIP升级,true);
-    
-    
-    Ares.FindMultiColorWithTap(主线任务.VIPBOSS1,true);
-    
-    Ares.FindMultiColorWithTap(主线任务.VIPBOSS2,true);
-    
-    
-    if Ares.FindMultiColorWithTap(主线任务.人物加点,true) == true then
-		Ares.TapFormFeature(主线任务.人物加点推荐);
-        Ares.Sleep(1);
-		Ares.TapFormFeature(主线任务.人物加点保存);
-	end
-    
-    
-    if Ares.FindMultiColorWithTap(主线任务.宠物激活,true) == true then
-        Ares.Sleep(1);
-        Ares.TapFormFeature(主线任务.宠物激活确定);
-        Ares.Sleep(1);
-        Ares.TapFormFeature(主线任务.宠物出战);
-        Ares.Sleep(1);
-        Ares.TapFormFeature(主线任务.宠物激活确定);
-        Ares.Sleep(1);
-        Ares.TapFormFeature(主线任务.返回);
-	end    
-    Ares.FindMultiColorWithTap(主线任务.宠物兑换购买1,true);
-    
-    
-    -- 找黄色按钮 点
-    Ares2.Find.SingleColor(主线任务.黄色按钮,true);
-    
-    
-    Ares.Sleep(1)
-    
-    return "TaskMainLine";
-	
-end
-
-Unit.Param.TaskMainLine={
-	
-};
 function GongHuiHuSong()
+	if	CheckTaskStatus(11) then
+		Ares2.MessageBox("护送完毕")
+		return false
+	end
 	-- 点开工会
     Ares.TapFormFeature(feature.task.gonghui.icon);
     sleep(1000);
@@ -2520,6 +2347,7 @@ function GongHuiHuSong()
             Ares.TapFormFeature(feature.system.return_down_icon);
             Ares.Sleep(1)
             
+			ChangeTaskStatus(11);
 			Ares.MessageBox("护送次数用尽");
             return false;
 		end         
@@ -2536,82 +2364,102 @@ function GongHuiHuSong()
 	Ares.TapFormFeature(feature.system.return_down_icon);
     
 end
--- 收取邮件
-function ShouQuYouJian()
-    
-    -- 打开好友
-    Ares2.TapFormFeature(feature.好友.图标);
-    Ares2.Sleep(2);
-    
-    -- 打开邮件
-    Ares2.TapFormFeature(feature.好友.邮件.图标);
-    Ares2.Sleep(2);
-    -- 一键领取
-    
-    Ares2.Find.MultiColor(feature.好友.邮件.一键领取,true)
-     
-    Ares2.TapFormFeature(feature.好友.邮件.领取确认);
-     
-    sleep(2000);
-    -- 删除已读
-    Ares2.TapFormFeature(feature.好友.邮件.删除已读);
-    
-    -- 查未读邮件
-    
-    while Ares2.Find.MultiColor(feature.好友.邮件.未读邮件,true) do
-		-- 点删除 
-		Ares2.TapFormFeature(feature.好友.邮件.删除未读);
+-- taskid  1
+
+function LingQuHuoYue()
+--	if	CheckTaskStatus(1) then
+--		Ares2.MessageBox("活跃领取完毕")
+--		return false
+--	end
+    -- 点击领取活跃按钮
+	Ares.TapFormFeature(feature.日常.图标);
+    local retryTimes = 0;
+    while true do
+        -- 验证有没有待领取的活跃值
+        if retryTimes > 20 then
+			Ares2.MessageBox("活跃领取异常，程序退出")
+			break;
+		end
+        
+		if Ares2.Find.MultiColor(feature.日常.不可领取) == false then
+           Ares2.TapFormFeature(feature.日常.领取);
+		else
+			Ares2.MessageBox("活跃领取完毕")
+			break;
+		end
+        retryTimes = retryTimes + 1;
     end
     
-    Ares2.TapFormFeature(feature.好友.邮件.退出);
-    
-    Ares2.MessageBox("邮件处理完毕")
-    
-end
-
-
-function ShuiJingYiJi()
-    Ares2.TapFormFeature(feature.水晶遗迹.图标);
-    Ares2.MessageBox("寻路中");
-    Ares2.Sleep(5);
-    
-    -- 点击进入
-    Ares2.TapFormFeature(feature.水晶遗迹.进入);
-    
-    -- 有奖励的领取奖励
-    
-    if Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点1) and Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点2) then 
-		Ares2.TapFormFeature(feature.水晶遗迹.领取奖励);
-        Ares2.Sleep(1);
-        Ares2.TapFormFeature(feature.水晶遗迹.关闭领取奖励弹窗);
+    if retryTimes < 20 then 
+        -- 领取活跃奖励
+		Ares2.TapFormFeature(feature.日常.jiangli1);
+		Ares2.TapFormFeature(feature.日常.jiangli2);
+		Ares2.TapFormFeature(feature.日常.jiangli3);
+		Ares2.TapFormFeature(feature.日常.jiangli4);
+		Ares2.TapFormFeature(feature.日常.jiangli5);
 	end
+    -- Ares.TapFormFeature(feature.日常.关闭);
     
-     -- 点女神
-	Ares2.Sleep(1);
-	Ares2.TapFormFeature(feature.水晶遗迹.女神位置);
-	Ares2.Sleep(1);
-		
-	-- 检测是不是正在采矿中
-    if Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点1) then 
-        -- 点挖矿
-		Ares2.TapFormFeature(feature.水晶遗迹.开始挖矿);
-		Ares2.TapFormFeature(feature.水晶遗迹.开始挖矿确认);
-	end 
-    
-    -- 退出挖矿
-	Ares2.Sleep(1);
-	Ares2.TapFormFeature(feature.水晶遗迹.退出挖矿);
-    
-    
-    Ares2.Sleep(2);
-    
-    if CheckIsGameIndexPage() == false then
-		Ares2.TapFormFeature(feature.水晶遗迹.退出挖矿);
-	end 
-    
+    -- ChangeTaskStatus(1);
 end
+-- taskid  2
+-- 签到领奖
+function QianDaoLingJiang()
+    if	CheckTaskStatus(2) then
+		Ares2.MessageBox("签到领奖完毕")
+		return false
+	end
+    -- 打开福利
+    Ares2.TapFormFeature(feature.福利.图标);
+    
+    -- 切换签到页
+    Ares2.TapFormFeature(feature.福利.签到.图标);
+    
+    
+    
+    if Ares2.Find.MultiColor(feature.福利.签到.有奖励) == false then
+		Ares2.MessageBox("无奖励");
+        return;
+    end
+    
+	local rows = 8;
+    -- 拉到最下面
+    swipe(feature.system.swipeUp[1],feature.system.swipeUp[2],feature.system.swipeUp[3],feature.system.swipeUp[4]);	 
+    
+    
+    -- 一点一点的往下找 可领取三个字
+    for i=1,rows,1 do
+        Ares2.Sleep(1);
+		-- 找领取的小图标
+		if Ares2.Find.MultiColor(feature.福利.签到.可领取,true) then
+            break;
+        else
+            Ares2.Swipe(178,488,178,312,4,1);
+            Ares2.Sleep(1)
+        end
+    end
+    
+    
+	-- 摇钱树 
+    Ares2.TapFormFeature(feature.福利.祈福.图标);
+ 
+    Ares2.TapFormFeature(feature.福利.祈福.灵币祈福);
+    
+    
+    -- 点返回
+    Ares2.TapFormFeature(feature.system.back1);
+    Ares2.TapFormFeature(feature.system.back1);
+    
+    ChangeTaskStatus(2);
+end
+
+-- taskid  3
 -- 竞技
 function JingJi()    
+    if	CheckTaskStatus(3) then
+		Ares2.MessageBox("竞技完毕")
+		return false
+	end
     -- 点竞技按钮
 	Ares2.TapFormFeature(feature.竞技.图标);
     
@@ -2670,93 +2518,18 @@ function JingJi()
     end
     
 	Ares2.TapFormFeature(feature.竞技.关闭);
+    
+    ChangeTaskStatus(3);
+    
 end
 
-function ShiLianTa()
-    
-	-- 点击试炼塔图标
-	Ares2.TapFormFeature(feature.试炼塔.图标);
-    Ares2.MessageBox("寻路中");
-    Ares2.Sleep(5);
-    
-    
-	Ares2.TapFormFeature(feature.试炼塔.挑战);
-    
-    local finish = false;
-    
-    while true do
-		Ares2.MessageBox("挑战中");
-        if  CheckIsGameIndexPage() then
-            break;
-		end 
-        
-        if Ares2.Find.MultiColor(feature.试炼塔.通关提醒) then
-			Ares2.TapFormFeature(feature.试炼塔.关闭通关提醒);
-			break;
-		end
-    end
-    
-end
--- 野战
-function YeZhan()
-    -- 开始循环匹配
-    while true do
-        -- 点野战按钮
-		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip6,true);
-		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip7,true);
-        Ares2.Sleep(1);
-        
-        -- 滑倒最简单的那个
-		Ares2.Swipe(360,880,360,540,4,1);
-        
-        Ares2.Sleep(2);
-        
-        -- 点击挑战按钮
-        Ares2.TapFormFeature(feature.野战.挑战);
-        
-        -- 检测是否已经完成了
-		if Ares2.Find.MultiColor(feature.野战.全部完成,true) == true then
-            Ares2.MessageBox("野战已经完成")
-			-- 关闭
-			Ares2.TapFormFeature(feature.system.back2);
-            break;
-		end 
-		
-		local retryTimes = 1;
-        local isBreak = false;
-        
-        
-        while Ares2.Find.MultiColor(feature.野战.跳过,true) == false do
-            if retryTimes >= 20 then
-                isBreak = true;
-				Ares2.MessageBox("野战挑战异常")
-                break;
-			end
-            Ares2.MessageBox("野战寻路中。。。")
-            retryTimes = retryTimes + 1;
-        end
-        
-        if isBreak == true then 
-			Ares.MessageBox("野战挑战异常,进行下一任务")
-            break;
-		end 
-        
-        
-        -- 胜利或失败的确定按钮
-        
-        Ares2.TapFormFeature(feature.野战.关闭结果提示);
-        
-		-- 等待返回游戏首页
-        
-        while CheckIsGameIndexPage() == false do
-             Ares2.MessageBox("等待野战结束。。。");
-             Ares2.Sleep();
-        end
-        
-    end
-end
+-- taskid 4
+
 function FuBenZhengHeBan()
-    
+	if	CheckTaskStatus(4) then
+		Ares2.MessageBox("副本挑战完毕")
+		return false
+	end
 	Ares2.TapFormFeature(feature.副本.图标);
     while true do
         local isFinish = true;
@@ -2895,6 +2668,7 @@ function FuBenZhengHeBan()
         if isFinish == true then
 			Ares2.MessageBox("副本全部挑战完毕")
 			Ares.TapFormFeature(feature.副本.关闭);
+			ChangeTaskStatus(4);
             break;
 		end
         
@@ -2911,6 +2685,623 @@ function IsFuBenIndex()
 		return false;
 	end
 end
+-- 强化装备
+function ZhuangBeiQiangHua()
+	if	CheckTaskStatus(5) then
+		Ares2.MessageBox("强化完毕")
+		return false
+	end
+    -- 点开锻造
+    Ares2.TapFormFeature(feature.锻造.图标);
+    -- 点开强化tab页
+    Ares2.TapFormFeature(feature.锻造.强化.图标);
+    
+	local retryTimes = 0;
+    
+	while true do
+        
+		if retryTimes > 20 then
+            Ares2.MessageBox("强化次数超过上限，停止强化");
+            break;
+		end
+        
+        -- 验证有没有养成礼包
+        if Ares2.Find.MultiColor(feature.yangchenglibao.icon,true) then
+            Ares2.Sleep(2);
+		end;
+        
+        -- 验证能不能强化
+        -- 1.没有强化石了
+        if Ares2.Find.SingleColor(feature.锻造.强化.无强化石) then
+            Ares2.MessageBox("没有强化石了");
+            break;
+        end
+        -- 2.等级不够了
+        if Ares2.Find.MultiColor(feature.锻造.强化.等级不足) == false then
+            Ares2.MessageBox("强化等级不足");
+            break;
+		end
+        
+		-- 进行强化
+		Ares2.TapFormFeature(feature.锻造.强化.开始强化);
+        
+        -- 验证有没有进化按钮
+        Ares2.Find.MultiColor(feature.锻造.强化.突破,true);
+        
+        retryTimes = retryTimes + 1;
+    end 
+    
+    
+	-- 关闭强化
+	Ares2.TapFormFeature(feature.system.back2);
+    
+	ChangeTaskStatus(5);
+end
+function ZhongLiBoss()
+    if	CheckTaskStatus(6) then
+		Ares2.MessageBox("中立BOSS挑战完毕")
+		return false
+	end
+    local thisTimes = 0;
+    while true do
+        -- 在游戏首页 点boss按钮
+		if CheckIsGameIndexPage() == true then 
+			Ares2.TapFormFeature(feature.BOSS.图标);
+             -- 切换神殿页签
+			Ares2.TapFormFeature(feature.BOSS.中立.图标);
+		else
+            -- 检测一些异常提示框
+			Ares2.Find.MultiColor(feature.异常处理.提示1,true)
+   
+        end 
+        
+		XM.Swipe(360,880,360,540,4,1000);
+		XM.Swipe(360,880,360,540,4,1000);
+        Ares2.Sleep(1)
+        
+                
+        local isFind = false;
+        local retryTimes = 1;
+        local isOver = false;
+        while retryTimes < 5 do
+            retryTimes = retryTimes + 1
+            -- 找挑战按钮
+			if Ares2.Find.MultiColor(feature.BOSS.中立.挑战按钮,true) then 
+				Ares2.Sleep(1);
+				if Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示取消) == true 
+						and Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示) == false then
+					Ares2.MessageBox("中立BOSS挑战结束");
+                    
+					ChangeTaskStatus(6);
+                    isOver = true;
+					Ares2.Sleep(1)
+					Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示取消,true)
+					break;
+				end
+				-- 挑战提示
+				if Ares2.Find.MultiColor(feature.BOSS.中立.挑战提示) == true then
+					Ares2.Sleep(2);
+					Ares2.TapFormFeature(feature.BOSS.中立.挑战提示确定)
+				end
+				isFind = true;
+				Ares2.Sleep(5);
+				break;
+			else 
+				XM.Swipe(360,780,360,880,4,1000);
+			end
+        end
+        
+        
+        if isFind == true then 
+			while true do
+                Ares2.Sleep(1);
+                if Ares2.Find.MultiColor(feature.BOSS.中立.点券加血) == true then
+					if Ares2.Find.MultiColor(feature.BOSS.中立.免费加血,true) == true then
+                        Ares2.Sleep(1);
+                        Ares2.TapFormFeature(feature.BOSS.中立.免费加血确认)
+					end 
+					Ares2.MessageBox("中立BOSS挑战中");
+				else
+                    thisTimes = thisTimes + 1;
+					Ares2.MessageBox("中立BOSS挑战成功");
+                    local numbers = 20;
+                    while numbers>0 do
+                        Ares2.MessageBox("中立BOSS挑战倒计时："..numbers);
+                        numbers = numbers - 1;
+                    end
+                    break;
+				end
+            end
+        end
+        
+        if isOver == true then
+            break;
+		end
+        
+        if checkgetselected("task_zhongliboss_once") == true then 
+            break;
+		end 
+    end
+end
+-- 神殿BOSS
+function ShenDianBoss()
+    if	CheckTaskStatus(7) then
+		Ares2.MessageBox("神殿挑战完毕")
+		return false
+	end
+    while true do
+        
+        Ares.Sleep(10);
+        -- 在游戏首页 点boss按钮
+		if CheckIsGameIndexPage() == true then 
+			Ares2.TapFormFeature(feature.BOSS.图标);
+            Ares2.Sleep(2);
+             -- 切换神殿页签
+			Ares2.TapFormFeature(feature.BOSS.神殿.图标);
+            Ares2.Sleep(2);
+        end 
+        
+            
+		if Ares2.Find.MultiColor(feature.BOSS.神殿.可挑战) == false then
+			Ares2.TapFormFeature(feature.system.back2);
+            Ares2.Sleep(1);
+			Ares2.MessageBox("神殿挑战完成");
+            
+			ChangeTaskStatus(7);
+			break;
+		end
+            
+        Ares.Sleep(5);
+        
+        local bossAmount = 9;
+        local isError = false;
+        local seedX = 104 seedY = 688 totalCols = 3 totalRows = 3;
+        local isFinish = false;
+        
+        for _floor=2,1,-1 do
+            if _floor == 2 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第二层);
+                Ares2.MessageBox("第二层BOSS");
+			end
+            if _floor == 1 then
+				Ares2.TapFormFeature(feature.BOSS.神殿.第一层);
+                Ares2.MessageBox("第一层BOSS");
+			end
+            for i=bossAmount,1,-1 do
+				local rows = math.ceil(i/totalRows);
+				local cols = i % totalCols;
+				if cols == 0 then 
+					cols = totalCols;
+				end
+				
+				local bossX = seedX + (cols-1) * 242;
+				local bossY = seedY + (rows-1) * 114;
+				Ares2.TapFormFeature({bossX,bossY,1});
+				-- 检测能不能检测
+				local tiaozhanParam = {"BOSS"..i.."可挑战",bossX,bossY,bossX + 65,bossY + 30,"4DCA34",1,0};
+				if Ares2.Find.SingleColor(tiaozhanParam,true) == true then
+					Ares.MessageBox("准备挑战BOSS"..i);
+					-- 点击挑战按钮
+					Ares2.TapFormFeature(feature.BOSS.神殿.开始挑战);
+                    local retryTimes = 1;
+                    -- 检测是不是在寻路中
+                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == true do
+						if retryTimes > 20 then
+                            Ares2.MessageBox("寻路异常");
+                            isError = true;
+                            break;
+						end 
+                        
+                        if Ares2.Find.MultiColor(feature.BOSS.神殿.采集,true) then
+							-- 等待采集
+                            Ares2.Sleep(10 * 6);
+                            isError = true;
+                            break;
+						end
+                        Ares2.Sleep(1);
+                        retryTimes = retryTimes + 1;
+                    end
+                    
+                    -- 检测是不是挑战中
+                    
+                    while Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿) == false do
+                        Ares2.MessageBox("BOSS挑战中");
+                        Ares2.Sleep(1);
+                    end
+                    
+                    if	isError then
+						break;
+                    end
+                    
+                    Ares2.Sleep(10);
+                    Ares2.TapFormFeature(feature.BOSS.神殿.退出);
+					Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
+                    isFinish = true;
+                    break;
+				else
+					Ares2.MessageBox("BOSS"..i.."不可以挑战");
+				end
+			end  
+			if isError then
+                Ares2.TapFormFeature(feature.BOSS.神殿.退出);
+				Ares2.TapFormFeature(feature.BOSS.神殿.退出确认);
+                Ares2.Sleep(5);
+				break;
+			end 
+            if isFinish  then
+                break;
+            end
+        end
+    end
+end
+function VipBoss()
+    local index = 1;
+    if	CheckTaskStatus(8) then
+		Ares2.MessageBox("VIPBOSS挑战完毕")
+		return false
+	end
+    while true do
+        -- 点击BOSS 
+        Ares2.TapFormFeature(feature.BOSS.图标);
+        -- 点击VIP页签
+        Ares2.TapFormFeature(feature.BOSS.VIP.图标);
+        
+        -- 上推 显示全部
+        Ares2.Swipe(360,880,360,540,4,1);
+        Ares2.Sleep(2);
+		
+        -- 打boss
+        local isFindBoss = false;
+        if index == 1 then
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS1,true);
+        elseif index == 2 then
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS2,true);
+        elseif index == 3 then
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS3,true);
+        elseif index == 4 then
+            isFindBoss = Ares2.Find.MultiColor(feature.BOSS.VIP.BOSS4,true);
+        else
+            -- 点返回按钮
+            Ares2.TapFormFeature(feature.system.back2);
+            break;
+        end
+        if isFindBoss == true then 
+			Ares2.MessageBox("开始挑战VIP BOSS "..index);
+
+			while CheckIsGameIndexPage() == false do
+				Ares2.Sleep(1)
+				Ares2.MessageBox("VIP BOSS "..index.."挑战中");
+			end
+        end 
+        index = index + 1;
+		
+    end
+    
+	Ares2.MessageBox("VIP BOSS 挑战完毕");
+    
+	ChangeTaskStatus(8);
+end
+
+-- 野战
+function YeZhan()
+	if	CheckTaskStatus(9) then
+		Ares2.MessageBox("野战完毕")
+		return false
+	end
+    -- 开始循环匹配
+    while true do
+        -- 点野战按钮
+		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip6,true);
+		local vip6 = Ares2.Find.MultiColor(feature.野战.图标Vip7,true);
+        Ares2.Sleep(1);
+        
+        -- 滑倒最简单的那个
+		Ares2.Swipe(360,880,360,540,4,1);
+        
+        Ares2.Sleep(2);
+        
+        -- 点击挑战按钮
+        Ares2.TapFormFeature(feature.野战.挑战);
+        
+        -- 检测是否已经完成了
+		if Ares2.Find.MultiColor(feature.野战.全部完成,true) == true then
+            Ares2.MessageBox("野战已经完成")
+            
+			ChangeTaskStatus(9);
+			-- 关闭
+			Ares2.TapFormFeature(feature.system.back2);
+            break;
+		end 
+		
+		local retryTimes = 1;
+        local isBreak = false;
+        
+        
+        while Ares2.Find.MultiColor(feature.野战.跳过,true) == false do
+            if retryTimes >= 20 then
+                isBreak = true;
+				Ares2.MessageBox("野战挑战异常")
+                break;
+			end
+            Ares2.MessageBox("野战寻路中。。。")
+            retryTimes = retryTimes + 1;
+        end
+        
+        if isBreak == true then 
+			Ares.MessageBox("野战挑战异常,进行下一任务")
+            break;
+		end 
+        
+        
+        -- 胜利或失败的确定按钮
+        
+        Ares2.TapFormFeature(feature.野战.关闭结果提示);
+        
+		-- 等待返回游戏首页
+        
+        while CheckIsGameIndexPage() == false do
+             Ares2.MessageBox("等待野战结束。。。");
+             Ares2.Sleep();
+        end
+        
+    end
+end
+-- 检测是不是在黑暗神殿tab页签下
+function TaskBossCheckIsInShenDianTab()
+    --local a = Ares.FindMultiColorWithTap(feature.task.boss.shendian.pitch1);
+    --local b = Ares.FindMultiColorWithTap(feature.task.boss.shendian.pitch2);
+
+    local a = Ares.FindMultiColorWithTap(feature.task.boss.神殿.神殿入口定位1);
+    local b = Ares.FindMultiColorWithTap(feature.task.boss.神殿.神殿入口定位2);
+    
+    if	a == true and b == true then
+		return true;
+	else
+		return false;
+	end
+end
+
+
+-- 检测是不是在黑暗神殿内
+function TaskBossCheckIsInShenDianIndex(isBack)
+    local x1 = -1 y1 = -1;
+    local x2 = -1 y2 = -1;
+    XM.KeepScreen(0)
+    x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.inner_pitch1);
+    x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.inner_pitch2);
+    if	x1>0 and y1>0 and x2>0 and y2>0 then
+		if isBack == true then
+            
+			Ares.TapFormFeature(feature.task.boss.shendian.tuichu);
+			Ares.TapFormFeature(feature.task.boss.shendian.tuichuqueren);
+		end
+		return true;
+	else
+		return false;
+	end
+end
+
+
+-- 检测是不是在黑暗神殿内
+function TaskBossCheckIsFighting()
+    local x1 = -1 y1 = -1;
+    local x2 = -1 y2 = -1;
+    x1,y1 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch1);
+    x2,y2 = Ares.FindMultiColor(feature.task.boss.shendian.fighting_pitch2);
+    if	(x1>0 and y1>0) and (x2>0 and y2>0) then
+		return true;
+	else
+		return false;
+	end
+end
+function ChongWuDuiHuan()
+    -- 点开宠物
+    Ares.TapFormFeature(feature.task.chongwu.icon)
+    -- 点击兑换
+    Ares.TapFormFeature(feature.task.chongwu.duihuan.icon);
+    
+    while true do
+		-- 点击刷新
+		Ares.TapFormFeature(feature.task.chongwu.duihuan.shuaxin);
+        
+        -- 验证是不是不能兑换了
+        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.finish) == true then
+            Ares.MessageBox("宠物兑换完毕");
+			Ares.TapFormFeature(feature.system.back2)
+			break
+        end
+        
+        
+		Ares.TapFormFeature(feature.task.chongwu.duihuan.pos1);
+        
+        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.jifenbuzu) == true then
+            Ares.MessageBox("积分不足，兑换停止");
+			Ares.TapFormFeature(feature.system.back2)
+			Ares.TapFormFeature(feature.system.back2)
+			break
+		end 
+        
+		Ares.TapFormFeature(feature.task.chongwu.duihuan.pos2);
+        
+        if Ares.FindMultiColorWithTap(feature.task.chongwu.duihuan.jifenbuzu) == true then
+            Ares.MessageBox("积分不足，兑换停止");
+			Ares.TapFormFeature(feature.system.back2)
+			Ares.TapFormFeature(feature.system.back2)
+			break
+		end 
+        
+    end
+end
+-- 主线任务
+function Unit.State.TaskMainLine() 
+    Ares.TapFormFeature(主线任务.任务)
+    -- 开启旅程按钮
+	Ares.FindMultiColorWithTap(主线任务.开始旅程,true);
+    Ares.FindMultiColorWithTap(主线任务.赫拉哔哔,true);
+    Ares.FindMultiColorWithTap(主线任务.赫拉哔哔2,true);
+    Ares.FindMultiColorWithTap(主线任务.人物哔哔2,true);
+    Ares.FindMultiColorWithTap(主线任务.人物哔哔1,true);
+    
+	if Ares.FindMultiColorWithTap(主线任务.穿装备定位1) == true and Ares.FindMultiColorWithTap(主线任务.穿装备定位2) == true then
+        Ares.TapFormFeature(主线任务.装备穿戴)
+	end
+    
+    
+    
+    Ares.FindMultiColorWithTap(主线任务.功能按钮1,true);
+    Ares.FindMultiColorWithTap(主线任务.功能按钮2,true);
+    Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
+    
+    if Ares.FindMultiColorWithTap(主线任务.学习技能1,true) == true then
+		Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
+	end
+	if Ares.FindMultiColorWithTap(主线任务.学习技能2,true) == true then
+		Ares.FindMultiColorWithTap(主线任务.功能按钮3,true);
+	end
+    
+    Ares.FindMultiColorWithTap(主线任务.VIP按钮1,true);
+    Ares.FindMultiColorWithTap(主线任务.VIP按钮2,true);
+    Ares.FindMultiColorWithTap(主线任务.VIP升级,true);
+    
+    
+    Ares.FindMultiColorWithTap(主线任务.VIPBOSS1,true);
+    
+    Ares.FindMultiColorWithTap(主线任务.VIPBOSS2,true);
+    
+    
+    if Ares.FindMultiColorWithTap(主线任务.人物加点,true) == true then
+		Ares.TapFormFeature(主线任务.人物加点推荐);
+        Ares.Sleep(1);
+		Ares.TapFormFeature(主线任务.人物加点保存);
+	end
+    
+    
+    if Ares.FindMultiColorWithTap(主线任务.宠物激活,true) == true then
+        Ares.Sleep(1);
+        Ares.TapFormFeature(主线任务.宠物激活确定);
+        Ares.Sleep(1);
+        Ares.TapFormFeature(主线任务.宠物出战);
+        Ares.Sleep(1);
+        Ares.TapFormFeature(主线任务.宠物激活确定);
+        Ares.Sleep(1);
+        Ares.TapFormFeature(主线任务.返回);
+	end    
+    Ares.FindMultiColorWithTap(主线任务.宠物兑换购买1,true);
+    
+    
+    -- 找黄色按钮 点
+    Ares2.Find.SingleColor(主线任务.黄色按钮,true);
+    
+    
+    Ares.Sleep(1)
+    
+    return "TaskMainLine";
+	
+end
+
+Unit.Param.TaskMainLine={
+	
+};
+-- 收取邮件
+function ShouQuYouJian()
+    
+    -- 打开好友
+    Ares2.TapFormFeature(feature.好友.图标);
+    Ares2.Sleep(2);
+    
+    -- 打开邮件
+    Ares2.TapFormFeature(feature.好友.邮件.图标);
+    Ares2.Sleep(2);
+    -- 一键领取
+    
+    Ares2.Find.MultiColor(feature.好友.邮件.一键领取,true)
+     
+    Ares2.TapFormFeature(feature.好友.邮件.领取确认);
+     
+    sleep(2000);
+    -- 删除已读
+    Ares2.TapFormFeature(feature.好友.邮件.删除已读);
+    
+    -- 查未读邮件
+    
+    while Ares2.Find.MultiColor(feature.好友.邮件.未读邮件,true) do
+		-- 点删除 
+		Ares2.TapFormFeature(feature.好友.邮件.删除未读);
+    end
+    
+    Ares2.TapFormFeature(feature.好友.邮件.退出);
+    
+    Ares2.MessageBox("邮件处理完毕")
+    
+    ChangeTaskStatus(2);
+end
+
+
+function ShuiJingYiJi()
+    Ares2.TapFormFeature(feature.水晶遗迹.图标);
+    Ares2.MessageBox("寻路中");
+    Ares2.Sleep(5);
+    
+    -- 点击进入
+    Ares2.TapFormFeature(feature.水晶遗迹.进入);
+    
+    -- 有奖励的领取奖励
+    
+    if Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点1) and Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点2) then 
+		Ares2.TapFormFeature(feature.水晶遗迹.领取奖励);
+        Ares2.Sleep(1);
+        Ares2.TapFormFeature(feature.水晶遗迹.关闭领取奖励弹窗);
+	end
+    
+     -- 点女神
+	Ares2.Sleep(1);
+	Ares2.TapFormFeature(feature.水晶遗迹.女神位置);
+	Ares2.Sleep(1);
+		
+	-- 检测是不是正在采矿中
+    if Ares2.Find.MultiColor(feature.水晶遗迹.领取奖励定位点1) then 
+        -- 点挖矿
+		Ares2.TapFormFeature(feature.水晶遗迹.开始挖矿);
+		Ares2.TapFormFeature(feature.水晶遗迹.开始挖矿确认);
+	end 
+    
+    -- 退出挖矿
+	Ares2.Sleep(1);
+	Ares2.TapFormFeature(feature.水晶遗迹.退出挖矿);
+    
+    
+    Ares2.Sleep(2);
+    
+    if CheckIsGameIndexPage() == false then
+		Ares2.TapFormFeature(feature.水晶遗迹.退出挖矿);
+	end 
+    
+end
+function ShiLianTa()
+    
+	-- 点击试炼塔图标
+	Ares2.TapFormFeature(feature.试炼塔.图标);
+    Ares2.MessageBox("寻路中");
+    Ares2.Sleep(5);
+    
+    
+	Ares2.TapFormFeature(feature.试炼塔.挑战);
+    
+    local finish = false;
+    
+    while true do
+		Ares2.MessageBox("挑战中");
+        if  CheckIsGameIndexPage() then
+            break;
+		end 
+        
+        if Ares2.Find.MultiColor(feature.试炼塔.通关提醒) then
+			Ares2.TapFormFeature(feature.试炼塔.关闭通关提醒);
+			break;
+		end
+    end
+    
+end
 function ChangeAccount()
 	KillGame();
 	sleep(3000);
@@ -2922,81 +3313,6 @@ function ChangeAccount()
 		end  
 	else
 		return "OpenGame"
-	end
-end
--- 签到领奖
-function QianDaoLingJiang()
-    -- 打开福利
-    Ares2.TapFormFeature(feature.福利.图标);
-    
-    -- 切换签到页
-    Ares2.TapFormFeature(feature.福利.签到.图标);
-    
-    
-    
-    if Ares2.Find.MultiColor(feature.福利.签到.有奖励) == false then
-		Ares2.MessageBox("无奖励");
-        return;
-    end
-    
-	local rows = 8;
-    -- 拉到最下面
-    swipe(feature.system.swipeUp[1],feature.system.swipeUp[2],feature.system.swipeUp[3],feature.system.swipeUp[4]);	 
-    
-    
-    -- 一点一点的往下找 可领取三个字
-    for i=1,rows,1 do
-        Ares2.Sleep(1);
-		-- 找领取的小图标
-		if Ares2.Find.MultiColor(feature.福利.签到.可领取,true) then
-            break;
-        else
-            Ares2.Swipe(178,488,178,312,4,1);
-            Ares2.Sleep(1)
-        end
-    end
-    
-    
-	-- 摇钱树 
-    Ares2.TapFormFeature(feature.福利.祈福.图标);
- 
-    Ares2.TapFormFeature(feature.福利.祈福.灵币祈福);
-    
-    
-    -- 点返回
-    Ares2.TapFormFeature(feature.system.back1);
-    Ares2.TapFormFeature(feature.system.back1);
-    
-    
-end
-
-function LingQuHuoYue()
-    -- 点击领取活跃按钮
-	Ares.TapFormFeature(feature.日常.图标);
-    local retryTimes = 0;
-    while true do
-        -- 验证有没有待领取的活跃值
-        if retryTimes > 20 then
-			Ares2.MessageBox("活跃领取异常，程序退出")
-			break;
-		end
-        
-		if Ares2.Find.MultiColor(feature.日常.不可领取) == false then
-           Ares2.TapFormFeature(feature.日常.领取);
-		else
-			Ares2.MessageBox("活跃领取完毕")
-			break;
-		end
-        retryTimes = retryTimes + 1;
-    end
-    
-    if retryTimes < 20 then 
-        -- 领取活跃奖励
-		Ares2.TapFormFeature(feature.日常.jiangli1);
-		Ares2.TapFormFeature(feature.日常.jiangli2);
-		Ares2.TapFormFeature(feature.日常.jiangli3);
-		Ares2.TapFormFeature(feature.日常.jiangli4);
-		Ares2.TapFormFeature(feature.日常.jiangli5);
 	end
 end
 -- 批量熔炼
@@ -3062,6 +3378,8 @@ function WuPinPaiMai()
     
 
     Ares2.TapFormFeature(feature.背包.背包页);
+    
+    local continueSec = 0;
    
 	-- 验证第4个物品是不是拍品
     
@@ -3069,6 +3387,10 @@ function WuPinPaiMai()
         
         Ares2.TapFormFeature(feature.背包.拍卖.使用);
         while true do
+            continueSec = continueSec + 1;
+            if continueSec > 120 then
+                break;
+            end
 			if Ares2.Find.MultiColor(feature.背包.拍卖.批量未完成) then
                 Ares2.TapFormFeature(feature.背包.拍卖.批量拿去拍卖);
 			elseif Ares2.Find.MultiColor(feature.背包.拍卖.批量过期) then
@@ -3085,6 +3407,10 @@ function WuPinPaiMai()
         
 	else
         while true do
+            continueSec = continueSec + 1;
+            if continueSec > 120 then
+                break;
+            end
             local isBreak = true;
             if Ares2.Find.MultiColor(feature.背包.拍卖.物品1可用,true) then
 				Ares2.TapFormFeature(feature.背包.拍卖.使用);
@@ -3134,85 +3460,4 @@ function RenWuShengJi()
             break;
 		end 
     end
-end
--- 角色加点
-function JueSeJiaDian()
-    -- 打开角色
-    Ares.TapFormFeature(feature.角色.图标);
-    Ares2.Sleep(2);
-    
-    Ares.TapFormFeature(feature.角色.图标);
-    Ares2.Sleep(2);
-    
-    for i=1,5,1 do
-        local x = 130 + (i - 1) * 122;
-        -- 点击人物头像
-        Ares2.Tap(x,212)
-        Ares2.Sleep(1);
-        
-        -- 判断信息页签
-        if Ares2.Find.MultiColor(feature.角色.信息.可操作,true) then
-            -- 一键装备
-            Ares2.TapFormFeature(feature.角色.信息.一键装备);
-		end
-        
-        -- 判断加点页签
-        if Ares2.Find.MultiColor(feature.角色.加点.可操作,true) then
-            -- 点击推荐
-			Ares2.TapFormFeature(feature.角色.加点.推荐);
-			-- 点击保存
-			Ares2.TapFormFeature(feature.角色.加点.保存);
-		end
-    end
- 
-    Ares2.TapFormFeature(feature.system.back2);
-		
-    Ares2.MessageBox("角色加点操作完毕",2);
-    
-end
--- 强化装备
-function ZhuangBeiQiangHua()
-    -- 点开锻造
-    Ares2.TapFormFeature(feature.锻造.图标);
-    -- 点开强化tab页
-    Ares2.TapFormFeature(feature.锻造.强化.图标);
-    
-	local retryTimes = 0;
-    
-	while true do
-        
-		if retryTimes > 20 then
-            Ares2.MessageBox("强化次数超过上限，停止强化");
-            break;
-		end
-        
-        -- 验证有没有养成礼包
-        if Ares2.Find.MultiColor(feature.yangchenglibao.icon,true) then
-            Ares2.Sleep(2);
-		end;
-        
-        -- 验证能不能强化
-        -- 1.没有强化石了
-        if Ares2.Find.SingleColor(feature.锻造.强化.无强化石) then
-            Ares2.MessageBox("没有强化石了");
-            break;
-        end
-        -- 2.等级不够了
-        if Ares2.Find.MultiColor(feature.锻造.强化.等级不足) == false then
-            Ares2.MessageBox("强化等级不足");
-            break;
-		end
-        
-		-- 进行强化
-		Ares2.TapFormFeature(feature.锻造.强化.开始强化);
-        
-        -- 验证有没有进化按钮
-        Ares2.Find.MultiColor(feature.锻造.强化.突破,true);
-        
-        retryTimes = retryTimes + 1;
-    end 
-    
-    
-	-- 关闭强化
-	Ares2.TapFormFeature(feature.system.back2);
 end

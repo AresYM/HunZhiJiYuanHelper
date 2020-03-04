@@ -15,7 +15,10 @@ Global = {
         CurrentIndex = 1,
         SubCurrentIndex = 1
     },
-    ChangeXiaoQiAccount = false;
+    ChangeXiaoQiAccount = false,
+    CurrentAccountTitle="default",
+    CurrentAccountTaskStatusFile = "",
+    TaskStatus = {}
 };
 
 -- 状态机
@@ -33,11 +36,35 @@ end
 
 -- 检测游戏是否启动成功
 function Unit.State.Test()
-    -- Unit.State.XiaoQiLogin()
-    -- InitXiaoQiLogin();
+    local taskRecordName = Ares2.RootPath.."default1.txt";
     
-    Ares2.Find.MultiColor(feature.BOSS.神殿.黑暗神殿);
+	local isExists = fileexist(taskRecordName);
+        
+	lineprint(taskRecordName.."是否存在："..isExists);
+	local dayStr = os.date("%Y%m%d");
     
+	-- 不存在  创建并初始化内容
+	if isExists == 0 then
+		local f = fileopen(taskRecordName,"a+");
+		filewrite(f,dayStr);
+		fileclose(f);
+        Global.TaskStatus[1] = dayStr;
+	-- 存在 读出内容
+	else
+		local content =filereadex(taskRecordName)
+        local taskStatus = Ares2.Ext.Split(content,"|");
+        
+        if	taskStatus[1] == dayStr then
+			Global.TaskStatus = taskStatus;
+        else
+            Global.TaskStatus={};
+            Global.TaskStatus[1] = dayStr;
+        end
+	end
+    
+	XM.Print(Global.TaskStatus)
+        
+    sleep(1000 * 100000)
     return "Test";
 end
 

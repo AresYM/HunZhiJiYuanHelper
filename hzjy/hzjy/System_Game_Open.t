@@ -21,7 +21,8 @@ function Unit.State.OpenGame()
         
 		if LoginGameErrorTimes > 10 then
             LoginGameErrorTimes = 0;
-            KillGame()
+            KillGame();
+            Ares2.Sleep(10);
             return "OpenGame";
 		end
         
@@ -71,6 +72,8 @@ function Unit.State.OpenGame()
     else
         -- 启动游戏
         StartGameOnly();
+        Ares2.MessageBox("20秒后启动游戏")
+        Ares2.Sleep(10);
         -- 没启动成功 继续检测
         return "OpenGame";
     end
